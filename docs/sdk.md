@@ -5,7 +5,9 @@ title: SDK
 
 ### Интеграция через SDK
 
-Доступны официальные SDK, позволяющие легко встроить идентификацию в мобильные приложения:
+Для удобной интеграции идентификации в мобильные приложения доступны официальные SDK:
 
-- **iOS SDK** — для iOS устройств
-- **Android SDK** — для Android-устройств
+**Платформа:** iOS устройства  
+**Репозиторий:** [https://github.com/theabletechnologies/AbleIDSDK](https://github.com/theabletechnologies/AbleIDSDK)
+
+**Платформа:** Android устройства  
