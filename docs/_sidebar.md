@@ -5,7 +5,9 @@
 <h2 style="margin-left: 15px;">Документация AbleID</h2>
 
 - [Главная](/)
-- [Методы API](methods.md)
-	- [Хуки](hooks.md)
+- [Able ID](ableid.md)
+- [Able P2P](p2p.md)
+- [Able Pay](ablepay.md)
+- [Хуки](hooks.md)
 - [SDK](sdk.md)
 - [Коды ошибок](errors.md)

@@ -1,24 +1,32 @@
 module.exports = {
-  docs: [
-    {
-      type: 'doc',
-      id: 'home', // Соответствует файлу home.md
-    },
-    {
-      type: 'category',
-      label: 'Методы API',
-      items: [
-        'methods',   // methods.md
-        'hooks',     // hooks.md
-      ],
-    },
-    {
-      type: 'doc',
-      id: 'sdk',     // sdk.md
-    },
-    {
-      type: 'doc',
-      id: 'errors',   // errors.md
-    }
-  ],
+    docs: [
+        {
+            type: 'doc',
+            id: 'home',
+        },
+        {
+            type: 'doc',
+            id: 'ableid',
+        },
+        {
+            type: 'doc',
+            id: 'p2p',
+        },
+        {
+            type: 'doc',
+            id: 'ablepay',
+        },
+        {
+            type: 'doc',
+            id: 'sdk',
+        },
+        {
+            type: 'doc',
+            id: 'hooks',
+        },
+        {
+            type: 'doc',
+            id: 'errors',
+        }
+    ],
 };
