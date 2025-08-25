@@ -9,7 +9,7 @@ title: Able ID
 
 **Описание:** Идентификация резидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
@@ -81,7 +81,7 @@ https://ableid-dev-back.theable.tech/public/check/faceid/ - Тестирован
 
 **Описание:** Идентификация нерезидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/foreign/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/foreign/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 

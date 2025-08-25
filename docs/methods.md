@@ -9,7 +9,7 @@ title: Методы API
 
 **Описание:** Идентификация резидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
@@ -79,7 +79,7 @@ https://ableid-dev-back.theable.tech/public/check/faceid/ - Тестирован
 
 **Описание:** Верификация резидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/verification/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/verification/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
@@ -151,7 +151,7 @@ https://ableid-dev-back.theable.tech/public/check/faceid/verification/ - Тес�
 
 **Описание:** Идентификация нерезидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/foreign/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/foreign/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
@@ -223,7 +223,7 @@ https://ableid-dev-back.theable.tech/public/check/faceid/foreign/ - Тестир
 
 **Описание:** Верификация нерезидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/foreign_verification/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/foreign_verification/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
@@ -295,7 +295,7 @@ https://ableid-dev-back.theable.tech/public/check/faceid/foreign_verification/ -
 
 **Описание:** Инициализация AblePay
 
-https://ableid-dev-back.theable.tech/public/pay/generate/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/pay/generate/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
@@ -377,6 +377,7 @@ https://ableid-dev-back.theable.tech/public/pay/generate/ - Тестирован
   }
 }
 ```
+
 **Описание полей:**
 
 Содержимое объекта data

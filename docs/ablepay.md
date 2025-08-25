@@ -7,7 +7,7 @@ title: Able Pay
 
 **Описание:** Инициализация AblePay
 
-https://ableid-dev-back.theable.tech/public/pay/generate/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/pay/generate/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 

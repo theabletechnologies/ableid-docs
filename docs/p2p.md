@@ -9,7 +9,7 @@ title: Able P2P
 
 **Описание:** Верификация резидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/verification/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/verification/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
@@ -81,7 +81,7 @@ https://ableid-dev-back.theable.tech/public/check/faceid/verification/ - Тес�
 
 **Описание:** Верификация нерезидентов
 
-https://ableid-dev-back.theable.tech/public/check/faceid/foreign_verification/ - Тестирование веб версии с браузера
+`https://{baseUrl}/public/check/faceid/foreign_verification/` - Тестирование веб версии с браузера
 
 ### Тело запроса
 
