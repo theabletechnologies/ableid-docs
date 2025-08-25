@@ -5,9 +5,9 @@ title: Главная
 
 # Описание для работы с AbleID
 
-**Base URLs:**
-**Среда разработки:** [https://ableid-dev-back.theable.tech](https://ableid-dev-back.theable.tech)
-**Стейдж-среда:** [https://faceid-dev-back.theable.tech](https://faceid-dev-back.theable.tech)
+**Base URLs:**  
+**Среда разработки:** [https://ableid-dev-back.theable.tech](https://ableid-dev-back.theable.tech)  
+**Стейдж-среда:** [https://faceid-dev-back.theable.tech](https://faceid-dev-back.theable.tech)  
 **Продакшн-среда:** [https://faceid-back.theable.tech](https://faceid-back.theable.tech)
 
 API предназначено для инициации, обработки и завершения сессий идентификации с использованием уникальных ключей
