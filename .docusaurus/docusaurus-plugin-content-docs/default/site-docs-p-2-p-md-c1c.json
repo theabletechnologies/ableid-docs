@@ -1,0 +1,26 @@
+{
+  "id": "p2p",
+  "title": "Able P2P",
+  "description": "POST /check/start/verification/second",
+  "source": "@site/docs/p2p.md",
+  "sourceDirName": ".",
+  "slug": "/p2p",
+  "permalink": "/ableid-docs/p2p",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "p2p",
+    "title": "Able P2P"
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Able ID",
+    "permalink": "/ableid-docs/ableid"
+  },
+  "next": {
+    "title": "Able Pay",
+    "permalink": "/ableid-docs/ablepay"
+  }
+}

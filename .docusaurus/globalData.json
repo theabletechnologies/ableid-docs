@@ -1,0 +1,72 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/ableid-docs/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/ableid-docs/",
+          "mainDocId": "home",
+          "docs": [
+            {
+              "id": "ableid",
+              "path": "/ableid-docs/ableid",
+              "sidebar": "docs"
+            },
+            {
+              "id": "ablepay",
+              "path": "/ableid-docs/ablepay",
+              "sidebar": "docs"
+            },
+            {
+              "id": "android-sdk",
+              "path": "/ableid-docs/android-sdk",
+              "sidebar": "docs"
+            },
+            {
+              "id": "errors",
+              "path": "/ableid-docs/errors",
+              "sidebar": "docs"
+            },
+            {
+              "id": "home",
+              "path": "/ableid-docs/home",
+              "sidebar": "docs"
+            },
+            {
+              "id": "hooks",
+              "path": "/ableid-docs/hooks",
+              "sidebar": "docs"
+            },
+            {
+              "id": "ios-sdk",
+              "path": "/ableid-docs/ios-sdk",
+              "sidebar": "docs"
+            },
+            {
+              "id": "methods",
+              "path": "/ableid-docs/methods"
+            },
+            {
+              "id": "p2p",
+              "path": "/ableid-docs/p2p",
+              "sidebar": "docs"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "docs": {
+              "link": {
+                "path": "/ableid-docs/home",
+                "label": "home"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}
