@@ -62,20 +62,27 @@ dependencyResolutionManagement {
 import com.example.ableidsdk.external.AbleID
 ```
 
-### 2. Создание транзакции
+### 2. Получение данных сессии
 
-Создайте объект Transaction с уникальным `your_unique_attempt_id` и `your_liveness_end_point`. ID поможет вам отслеживать конкретную попытку проверки liveness. Endpoint (URL) для API проверки liveness:
+**Важно:** Прежде чем использовать SDK, необходимо получить данные сессии (`attemptId` и `fullUrl`) от AbleID backend через ваш сервер. Ваш backend должен вызвать один из методов AbleID API для инициализации сессии идентификации и передать полученные данные в мобильное приложение.
+
+### 3. Создание транзакции
+
+Создайте объект Transaction используя данные, полученные от вашего backend сервера:
 
 ```kotlin
-val transaction: Transaction = Transaction("your_unique_attempt_id", "your_liveness_end_point")
+val transaction: Transaction = Transaction(
+    attemptId = receivedAttemptId,  // Получен от вашего backend
+    baseUrl = receivedFullUrl       // Получен от вашего backend
+)
 ```
 
-### 3. Инициация проверки Liveness
+### 4. Инициация проверки Liveness
 
-Вызовите метод **startLiveness** объекта **AbleID.service**, передав текущий **Activity(context)** и объект **Transaction**:
+Вызовите метод **startLiveness** объекта **AbleID.service**, передав текущий **Activity(context)**, объект **Transaction** и **locale**:
 
 ```kotlin
-AbleID.service().startLiveness(this, transaction) { result ->
+AbleID.service().startLiveness(this, transaction, locale) { result ->
     when (result) {
         is LivenessResult.Success -> {
             val response = result.response
@@ -93,7 +100,7 @@ AbleID.service().startLiveness(this, transaction) { result ->
 }
 ```
 
-### 4. Обработка результата
+### 5. Обработка результата
 
 Метод **startLiveness** выполняется асинхронно, возвращая **LivenessResult**, который указывает, была ли проверка liveness успешной или неудачной:
 
@@ -106,17 +113,27 @@ public sealed class LivenessResult {
 
 ## Локализация
 
-Able ID SDK поддерживает несколько языков. SDK автоматически наследует локаль приложения и использует её. Язык по умолчанию - английский.
+Able ID SDK поддерживает несколько языков через параметр `locale` в методе `startLiveness`. Вы можете явно указать язык интерфейса или использовать автоматическое определение на основе системных настроек.
+
+### Поддерживаемые языки
+
+SDK поддерживает следующие языки через enum `AbleLocale`:
+
+- **AbleLocale.en** - Английский язык
+- **AbleLocale.ru** - Русский язык  
+- **AbleLocale.uz** - Узбекский язык
 
 ## Пример полной интеграции
 
 ```kotlin
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ableidsdk.external.AbleID
+import com.example.ableidsdk.external.AbleLocale
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -126,17 +143,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         
         findViewById<Button>(R.id.startLivenessButton).setOnClickListener {
-            startLivenessCheck()
+            // Предполагается, что данные сессии уже получены от вашего backend
+            startLivenessCheck(receivedAttemptId, receivedFullUrl)
         }
     }
     
-    private fun startLivenessCheck() {
+    private fun startLivenessCheck(attemptId: String, fullUrl: String) {
         val transaction = Transaction(
-            attemptId = UUID.randomUUID().toString(),
-            livenessEndPoint = "https://faceid-back.theable.tech"
+            attemptId = attemptId,  // Получен от вашего backend
+            baseUrl = fullUrl       // Получен от вашего backend
         )
+        val locale = AbleLocale.ru
         
-        AbleID.service().startLiveness(this, transaction) { result ->
+        AbleID.service().startLiveness(this, transaction, locale) { result ->
             when (result) {
                 is LivenessResult.Success -> {
                     val response = result.response
@@ -155,12 +174,11 @@ class MainActivity : AppCompatActivity() {
     private fun handleSuccess(response: AbleIdLivenessResponse) {
         runOnUiThread {
             Toast.makeText(this, "Проверка liveness завершена успешно", Toast.LENGTH_SHORT).show()
-            // Здесь вы можете обработать успешный результат
-            // например, отправить данные на ваш сервер
+            // Результат будет автоматически отправлен на ваш webhook URL
+            // Вы можете также уведомить ваш backend о завершении процесса
             Log.d("AbleID", "Attempt ID: ${response.attemptId}")
             Log.d("AbleID", "Status: ${response.status}")
             Log.d("AbleID", "Confidence: ${response.confidence}")
-            
         }
     }
     
@@ -179,7 +197,6 @@ class MainActivity : AppCompatActivity() {
             Log.e("AbleID", "Error: $message")
         }
     }
-    
 }
 ```
 

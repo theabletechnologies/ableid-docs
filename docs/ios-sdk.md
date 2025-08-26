@@ -63,18 +63,22 @@ end
 import AbleIDSDK
 ```
 
-#### 2. Создание транзакции
+#### 2. Получение данных сессии
 
-Создайте объект Transaction с уникальным `your_unique_attempt_id` и `your_liveness_end_point`. ID поможет вам отслеживать конкретную попытку проверки liveness. Endpoint (URL) для API проверки liveness:
+**Важно:** Прежде чем использовать SDK, необходимо получить данные сессии (`attemptId` и `baseUrl`) от AbleID backend через ваш сервер. Ваш backend должен вызвать один из методов AbleID API для инициализации сессии идентификации и передать полученные данные в мобильное приложение.
+
+#### 3. Создание транзакции
+
+Создайте объект Transaction используя данные, полученные от вашего backend сервера:
 
 ```swift
 let transaction: Transaction = .init(
-    attemptId: "your_unique_attempt_id", 
-    baseUrl: "your_liveness_end_point"
+    attemptId: receivedAttemptId,  // Получен от вашего backend
+    baseUrl: receivedBaseUrl       // Получен от вашего backend
 )
 ```
 
-#### 3. Инициация проверки Liveness
+#### 4. Инициация проверки Liveness
 
 Вызовите метод **startLiveness** объекта **AbleID.service**, передав текущий **UIViewController**, объект **Transaction** и желаемую **locale**:
 
@@ -83,15 +87,17 @@ AbleID.service.startLiveness(from: self, transaction: transaction, locale: .russ
     switch result {
     case .success(let response):
         // Обработка успешной проверки liveness
-        print(response)
+        print("Liveness check completed successfully: \(response)")
+        handleSuccess(response)
     case .failure(let error):
         // Обработка ошибок
-        print(error)
+        print("Liveness check failed: \(error)")
+        handleError(error)
     }
 }
 ```
 
-#### 4. Обработка результата
+#### 5. Обработка результата
 
 Метод **startLiveness** выполняется асинхронно, возвращая **LivenessResult**, который указывает, была ли проверка liveness успешной или неудачной:
 
@@ -139,9 +145,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func startLivenessCheck(_ sender: UIButton) {
+        // Предполагается, что данные сессии уже получены от вашего backend
+        startLivenessCheck(with: receivedAttemptId, baseUrl: receivedBaseUrl)
+    }
+    
+    private func startLivenessCheck(with attemptId: String, baseUrl: String) {
         let transaction = Transaction(
-            attemptId: UUID().uuidString,
-            baseUrl: "https://faceid-back.theable.tech"
+            attemptId: attemptId,  // Получен от вашего backend
+            baseUrl: baseUrl       // Получен от вашего backend
         )
         
         AbleID.service.startLiveness(
@@ -164,8 +175,9 @@ class ViewController: UIViewController {
         // Обработка успешного результата
         print("Liveness check completed successfully: \(response)")
         
-        // Здесь вы можете обработать результат проверки
-        // например, отправить данные на ваш сервер
+        // Результат будет автоматически отправлен на ваш webhook URL
+        // Вы можете также уведомить ваш backend о завершении процесса
+      
     }
     
     private func handleError(_ error: AbleIdLivenessError) {
@@ -195,10 +207,6 @@ class ViewController: UIViewController {
     }
 }
 ```
-
-## Android SDK
-
-**Статус:** В разработке
 
 ## Поддержка
 
