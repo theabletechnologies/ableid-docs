@@ -9,5 +9,6 @@
 - [Able P2P](p2p.md)
 - [Able Pay](ablepay.md)
 - [Хуки](hooks.md)
-- [SDK](sdk.md)
+- [iOS-SDK](ios-sdk.md)
+- [Android-SDK](android-sdk.md)
 - [Коды ошибок](errors.md)

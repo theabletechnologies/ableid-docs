@@ -18,7 +18,11 @@ module.exports = {
         },
         {
             type: 'doc',
-            id: 'sdk',
+            id: 'ios-sdk',
+        },
+         {
+            type: 'doc',
+            id: 'android-sdk',
         },
         {
             type: 'doc',
