@@ -5,29 +5,29 @@ title: Хуки
 
 ---
 
-## `POST /check/registration`
+## Получение данных по прописке
 
-**Описание:** Получение данных по прописке
+**[POST]** `https://{domain}/check/registration` - URL для отправки запроса
 
 ### Тело запроса
 
 ```json
 {
-  "attemptId": "",
+  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
   "pinfl": "12345678901234",
-  "projectId": "",
-  "secret": ""
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
 }
 ```
 
 **Описание полей:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример         |
-|-------------|----------|------------------------|--------------|----------------|
-| `attemptId` | `string` | ID сессии              | Да           | ""             |
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234 |
-| `projectId` | `string` | ID проекта             | Да           | ""             |
-| `secret`    | `string` | Секретный ключ проекта | Да           | ""             |
+| Поле        | Тип      | Описание               | Обязательное | Пример                           |
+|-------------|----------|------------------------|--------------|----------------------------------|
+| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
+| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 
 ### Ответы
 
@@ -102,29 +102,29 @@ URL-адреса
 
 ---
 
-## `POST /check/get_foreign_person`
+## Запрос на получение пересечения нерезидента
 
-**Описание:** Запрос на получение пересечения нерезидента
+**[POST]** `https://{domain}/check/get_foreign_person` - URL для отправки запроса
 
 ### Тело запроса
 
 ```json
 {
-  "document": "string",
-  "projectId": "",
-  "attemptId": "",
-  "secret": ""
+  "document": "AB12345678",
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
 }
 ```
 
 **Описание полей:**
 
-| Поле        | Тип      | Описание                        | Обязательное | Пример       |
-|-------------|----------|---------------------------------|--------------|--------------|
-| `document`  | `string` | Серия и номер паспорта (слитно) | Да           | AB12345678   |
-| `projectId` | `string` | ID проекта                      | Да           | ""           |
-| `attemptId` | `string` | ID сессии                       | Да           | ""           |
-| `secret`    | `string` | Секретный ключ проекта          | Да           | ""           |
+| Поле        | Тип      | Описание                        | Обязательное | Пример                           |
+|-------------|----------|---------------------------------|--------------|----------------------------------|
+| `document`  | `string` | Серия и номер паспорта (слитно) | Да           | AB12345678                       |
+| `projectId` | `string` | ID проекта                      | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии                       | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта          | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 
 ### Ответы
 
@@ -171,11 +171,9 @@ URL-адреса
 
 ---
 
----
+## Запрос на получение паспорта
 
-## `POST /check/get_passport`
-
-**Описание:** Запрос на получение паспорта
+**[POST]** `https://{domain}/check/get_passport` - URL для отправки запроса
 
 ### Тело запроса
 
@@ -183,21 +181,21 @@ URL-адреса
 {
   "pinfl": "12345678901234",
   "birthDate": "12.12.2000",
-  "projectId": "",
-  "attemptId": "",
-  "secret": ""
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
 }
 ```
 
 **Описание полей:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример         |
-|-------------|----------|------------------------|--------------|----------------|
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234 |
-| `birthDate` | `string` | Дата рождения          | Да           | "12.12.2000"   |
-| `projectId` | `string` | ID проекта             | Да           | ""             |
-| `attemptId` | `string` | ID сессии              | Да           | ""             |
-| `secret`    | `string` | Секретный ключ проекта | Да           | ""             |
+| Поле        | Тип      | Описание               | Обязательное | Пример                           |
+|-------------|----------|------------------------|--------------|----------------------------------|
+| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
+| `birthDate` | `string` | Дата рождения          | Да           | "12.12.2000"                     |
+| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 
 ### Ответы
 
@@ -267,9 +265,9 @@ URL-адреса
 
 ---
 
-## `POST /check/get_person`
+## Запрос на получение полной информации о человеке
 
-**Описание:** Запрос на получение полной информации о человеке
+**[POST]** `https://{domain}/check/get_person` - URL для отправки запроса
 
 ### Тело запроса
 
@@ -277,21 +275,21 @@ URL-адреса
 {
   "pinfl": "12345678901234",
   "birthDate": "12.12.2000",
-  "projectId": "",
-  "attemptId": "",
-  "secret": ""
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
 }
 ```
 
 **Описание полей:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример         |
-|-------------|----------|------------------------|--------------|----------------|
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234 |
-| `birthDate` | `string` | Дата рождения          | Да           | "12.12.2000"   |
-| `projectId` | `string` | ID проекта             | Да           | ""             |
-| `attemptId` | `string` | ID сессии              | Да           | ""             |
-| `secret`    | `string` | Секретный ключ проекта | Да           | ""             |
+| Поле        | Тип      | Описание               | Обязательное | Пример                           |
+|-------------|----------|------------------------|--------------|----------------------------------|
+| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
+| `birthDate` | `string` | Дата рождения          | Да           | "12.12.2000"                     |
+| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 
 ### Ответы
 
@@ -430,5 +428,66 @@ URL-адреса
 | `streetId`         | `string \| null` | ID улицы из справочника МВД   |
 | `streetCbuId`      | `string \| null` | ID улицы из справочника ЦБ    |
 | `registrationDate` | `string \| null` | Дата регистрации              |
+
+---
+
+---
+
+## Запрос на получение хука фотографии
+
+**[POST]** `https://{domain}/check/get_photo`- URL для отправки запроса
+
+### Тело запроса
+
+```json
+{
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
+}
+```
+
+**Описание полей:**
+
+| Поле        | Тип      | Описание               | Обязательное | Пример                           |
+|-------------|----------|------------------------|--------------|----------------------------------|
+| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+
+### Ответы
+
+#### `Успешный ответ: Придет на хук ранее прописанный для получения фотографии (см. пример ниже)`
+
+---
+
+**Описание:** Сервис уведомляет вашу систему о событиях, отправляя POST-запросы на заранее предоставленные статичные
+URL-адреса
+
+## `Хук получения фотографии`
+
+**Описание:** Получение фотографии
+
+### Ответы
+
+```json
+{
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Сообщение",
+  "data": {
+    "crc": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "attemptId": "RFJkzaealP6XF0CspiAoq",
+    "transactionId": "RFJkzaealP6XF0CspiAoq",
+    "photo": "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo="
+  }
+}
+```
+
+**Описание полей:**
+
+| Поле       | Тип данных       | Описание                       |
+|------------|------------------|--------------------------------|
+| `photo`    | `string`         | Base64 фотография пользователя |
 
 ---

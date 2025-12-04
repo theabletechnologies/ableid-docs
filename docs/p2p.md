@@ -5,24 +5,22 @@ title: Able P2P
 
 # Методы
 
-## `POST /check/start/verification/second`
+## Верификация резидентов
 
-**Описание:** Верификация резидентов
-
-`https://{baseUrl}/public/check/faceid/verification/` - Тестирование веб версии с браузера
+**[POST]** `https://{domain}/check/start/verification/second` - URL для отправки запроса
 
 ### Тело запроса
 
 ```json
 {
-  "projectId": "",
-  "transactionId": "",
-  "secret": "",
-  "pinfl": "",
-  "birthDate": "",
-  "lang": "",
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "transactionId": "1",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "pinfl": "12345678901234",
+  "birthDate": "12.12.2000",
+  "lang": "ru",
   "hooks": [
-    "string"
+    "https://domain.back/callback"
   ]
 }
 ```
@@ -31,9 +29,9 @@ title: Able P2P
 
 | Поле            | Тип                             | Описание               | Обязательное | Пример                           |
 |-----------------|---------------------------------|------------------------|--------------|----------------------------------|
-| `projectId`     | `string`                        | ID проекта             | Да           | ""                               |
-| `transactionId` | `string`                        | ID транзакции          | Да           | ""                               |
-| `secret`        | `string`                        | Секретный ключ проекта | Да           | ""                               |
+| `projectId`     | `string`                        | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `transactionId` | `string`                        | ID транзакции          | Да           | "1"                              |
+| `secret`        | `string`                        | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 | `pinfl`         | `string`                        | ПИНФЛ                  | Да           | 12345678901234                   |
 | `birthDate`     | `string`                        | Дата рождения          | Да           | "12.12.2000"                     |
 | `lang`          | `string` (enum: ru, en, uz, oz) | Язык                   | Нет          | "ru"                             |
@@ -62,7 +60,7 @@ title: Able P2P
 |-------------|---------------------------------|------------|--------------|------------------------------------------------|
 | `attemptId` | `string`                        | ID сессии  | Да           | "3HQVkBm_zCZqKFbTWVrhf"                        |
 | `fullUrl`   | `string`                        | URL сессии | Да           | "https://ableid.backend/3HQVkBm_zCZqKFbTWVrhf" |
-| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | -                                              |
+| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | "ru"                                           |
 
 #### `Ошибка: 400`
 
@@ -77,23 +75,21 @@ title: Able P2P
 
 ---
 
-## `POST /check/start/verification/foreign`
+## Верификация нерезидентов
 
-**Описание:** Верификация нерезидентов
-
-`https://{baseUrl}/public/check/faceid/foreign_verification/` - Тестирование веб версии с браузера
+**[POST]** `https://{domain}/check/start/verification/foreign` - URL для отправки запроса
 
 ### Тело запроса
 
 ```json
 {
-  "projectId": "",
-  "transactionId": "",
-  "secret": "",
-  "document": "string",
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "transactionId": "1",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "document": "AA123123",
   "lang": "ru",
   "hooks": [
-    "string"
+    "https://domain.back/callback"
   ]
 }
 ```
@@ -102,10 +98,10 @@ title: Able P2P
 
 | Поле            | Тип                             | Описание               | Обязательное | Пример                           |
 |-----------------|---------------------------------|------------------------|--------------|----------------------------------|
-| `projectId`     | `string`                        | ID проекта             | Да           | ""                               |
-| `transactionId` | `string`                        | ID транзакции          | Да           | ""                               |
-| `secret`        | `string`                        | Секретный ключ проекта | Да           | ""                               |
-| `document`      | `string`                        | Документ               | Да           | -                                |
+| `projectId`     | `string`                        | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `transactionId` | `string`                        | ID транзакции          | Да           | "1"                              |
+| `secret`        | `string`                        | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `document`      | `string`                        | Документ               | Да           | "AA123123"                       |
 | `lang`          | `string` (enum: ru, en, uz, oz) | Язык                   | Нет          | "ru"                             |
 | `hooks`         | `array of string`               | URLs для оповещений    | Да           | ["https://domain.back/callback"] |
 
@@ -132,7 +128,7 @@ title: Able P2P
 |-------------|---------------------------------|------------|--------------|------------------------------------------------|
 | `attemptId` | `string`                        | ID сессии  | Да           | "3HQVkBm_zCZqKFbTWVrhf"                        |
 | `fullUrl`   | `string`                        | URL сессии | Да           | "https://ableid.backend/3HQVkBm_zCZqKFbTWVrhf" |
-| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | -                                              |
+| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | "ru"                                           |
 
 #### `Ошибка: 400`
 

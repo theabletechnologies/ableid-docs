@@ -3,22 +3,20 @@ id: ablepay
 title: Able Pay
 ---
 
-## `POST /check/start/pay/second`
+## Инициализация AblePay
 
-**Описание:** Инициализация AblePay
-
-`https://{baseUrl}/public/pay/generate/` - Тестирование веб версии с браузера
+**[POST]** `https://{domain}/check/start/pay/second` - URL для отправки запроса
 
 ### Тело запроса
 
 ```json
 {
-  "projectId": "",
-  "transactionId": "",
-  "secret": "",
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "transactionId": "1",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
   "lang": "ru",
   "hooks": [
-    "string"
+    "https://domain.back/callback"
   ]
 }
 ```
@@ -27,9 +25,9 @@ title: Able Pay
 
 | Поле            | Тип                             | Описание               | Обязательное | Пример                           |
 |-----------------|---------------------------------|------------------------|--------------|----------------------------------|
-| `projectId`     | `string`                        | ID проекта             | Да           | ""                               |
-| `transactionId` | `string`                        | ID транзакции          | Да           | ""                               |
-| `secret`        | `string`                        | Секретный ключ проекта | Да           | ""                               |
+| `projectId`     | `string`                        | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `transactionId` | `string`                        | ID транзакции          | Да           | "1"                              |
+| `secret`        | `string`                        | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 | `lang`          | `string` (enum: ru, en, uz, oz) | Язык                   | Нет          | "ru"                             |
 | `hooks`         | `array of string`               | URLs для оповещений    | Да           | ["https://domain.back/callback"] |
 
@@ -56,7 +54,7 @@ title: Able Pay
 |-------------|---------------------------------|------------|--------------|------------------------------------------------|
 | `attemptId` | `string`                        | ID сессии  | Да           | "3HQVkBm_zCZqKFbTWVrhf"                        |
 | `fullUrl`   | `string`                        | URL сессии | Да           | "https://ableid.backend/3HQVkBm_zCZqKFbTWVrhf" |
-| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | -                                              |
+| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | "ru"                                           |
 
 --
 
@@ -72,16 +70,16 @@ title: Able Pay
     "attemptId": "RFJkzaealP6XF0CspiAoq",
     "data": {
       "person": {
-        "fullName": "string",
-        "document": "string",
-        "pinfl": "string",
+        "fullName": "Test Test",
+        "document": "AA123456",
+        "pinfl": "12345678901234",
         "isResident": true
       },
       "personas": [
         {
-          "fullName": "string",
-          "document": "string",
-          "pinfl": "string",
+          "fullName": "Test Test",
+          "document": "AA123456",
+          "pinfl": "12345678901234",
           "isResident": true
         }
       ]

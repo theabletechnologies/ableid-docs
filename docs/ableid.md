@@ -5,24 +5,22 @@ title: Able ID
 
 # Методы
 
-## `POST /check/start/second`
+## Идентификация резидентов
 
-**Описание:** Идентификация резидентов
-
-`https://{baseUrl}/public/check/faceid/` - Тестирование веб версии с браузера
+**[POST]** `https://{domain}/check/start/second` - URL для отправки запроса
 
 ### Тело запроса
 
 ```json
 {
-  "projectId": "",
-  "transactionId": "",
-  "secret": "",
-  "pinfl": "",
-  "birthDate": "",
-  "lang": "",
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "transactionId": "1",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "pinfl": "12345678901234",
+  "birthDate": "12.12.2000",
+  "lang": "ru",
   "hooks": [
-    "string"
+    "https://domain.back/callback"
   ]
 }
 ```
@@ -31,9 +29,9 @@ title: Able ID
 
 | Поле            | Тип                             | Описание               | Обязательное | Пример                           |
 |-----------------|---------------------------------|------------------------|--------------|----------------------------------|
-| `projectId`     | `string`                        | ID проекта             | Да           | ""                               |
-| `transactionId` | `string`                        | ID транзакции          | Да           | ""                               |
-| `secret`        | `string`                        | Секретный ключ проекта | Да           | ""                               |
+| `projectId`     | `string`                        | ID проекта AbleID      | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `transactionId` | `string`                        | ID транзакции клиента  | Да           | "1"                              |
+| `secret`        | `string`                        | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 | `pinfl`         | `string`                        | ПИНФЛ                  | Да           | 12345678901234                   |
 | `birthDate`     | `string`                        | Дата рождения          | Да           | "12.12.2000"                     |
 | `lang`          | `string` (enum: ru, en, uz, oz) | Язык                   | Нет          | "ru"                             |
@@ -62,7 +60,7 @@ title: Able ID
 |-------------|---------------------------------|------------|--------------|------------------------------------------------|
 | `attemptId` | `string`                        | ID сессии  | Да           | "3HQVkBm_zCZqKFbTWVrhf"                        |
 | `fullUrl`   | `string`                        | URL сессии | Да           | "https://ableid.backend/3HQVkBm_zCZqKFbTWVrhf" |
-| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | -                                              |
+| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | "ru"                                           |
 
 #### `Ошибка: 400`
 
@@ -77,23 +75,21 @@ title: Able ID
 
 ---
 
-## `POST /check/start/foreign`
+## Идентификация нерезидентов
 
-**Описание:** Идентификация нерезидентов
-
-`https://{baseUrl}/public/check/faceid/foreign/` - Тестирование веб версии с браузера
+**[POST]** `https://{domain}/check/start/foreign`- URL для отправки запроса
 
 ### Тело запроса
 
 ```json
 {
-  "projectId": "",
-  "transactionId": "",
-  "secret": "",
-  "document": "string",
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "transactionId": "1",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "document": "AA123123",
   "lang": "ru",
   "hooks": [
-    "string"
+    "https://domain.back/callback"
   ]
 }
 ```
@@ -102,10 +98,10 @@ title: Able ID
 
 | Поле            | Тип                             | Описание               | Обязательное | Пример                           |
 |-----------------|---------------------------------|------------------------|--------------|----------------------------------|
-| `projectId`     | `string`                        | ID проекта             | Да           | ""                               |
-| `transactionId` | `string`                        | ID транзакции          | Да           | ""                               |
-| `secret`        | `string`                        | Секретный ключ проекта | Да           | ""                               |
-| `document`      | `string`                        | Документ               | Да           | -                                |
+| `projectId`     | `string`                        | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `transactionId` | `string`                        | ID транзакции          | Да           | "1"                              |
+| `secret`        | `string`                        | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `document`      | `string`                        | Документ               | Да           | "AA123123"                       |
 | `lang`          | `string` (enum: ru, en, uz, oz) | Язык                   | Нет          | "ru"                             |
 | `hooks`         | `array of string`               | URLs для оповещений    | Да           | ["https://domain.back/callback"] |
 
@@ -132,7 +128,7 @@ title: Able ID
 |-------------|---------------------------------|------------|--------------|------------------------------------------------|
 | `attemptId` | `string`                        | ID сессии  | Да           | "3HQVkBm_zCZqKFbTWVrhf"                        |
 | `fullUrl`   | `string`                        | URL сессии | Да           | "https://ableid.backend/3HQVkBm_zCZqKFbTWVrhf" |
-| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | -                                              |
+| `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | "ru"                                           |
 
 #### `Ошибка: 400`
 
@@ -146,31 +142,3 @@ title: Able ID
   "message": "Сообщение"
 }
 ```
-
----
-
-## `POST /check/get_photo`
-
-**Описание:** Запрос на получение хука фотографии
-
-### Тело запроса
-
-```json
-{
-  "projectId": "",
-  "attemptId": "",
-  "secret": ""
-}
-```
-
-**Описание полей:**
-
-| Поле        | Тип      | Описание               | Обязательное | Пример |
-|-------------|----------|------------------------|--------------|--------|
-| `projectId` | `string` | ID проекта             | Да           | ""     |
-| `attemptId` | `string` | ID сессии              | Да           | ""     |
-| `secret`    | `string` | Секретный ключ проекта | Да           | ""     |
-
-### Ответы
-
-#### `Успешный ответ: Придет на хук ранее прописанный для получения фотографии`

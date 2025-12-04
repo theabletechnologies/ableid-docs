@@ -3,11 +3,13 @@ id: home
 title: Главная
 ---
 
-# Описание для работы с AbleID
+## Схема взаимодействия
+![Схема взаимодействия](/img/schema.png)
+
+## Описание работы с AbleID
 
 **Base URLs:**  
-**Среда разработки:** [https://ableid-dev-back.theable.tech](https://ableid-dev-back.theable.tech)  
-**Стейдж-среда:** [https://faceid-dev-back.theable.tech](https://faceid-dev-back.theable.tech)  
+**Дев среда:** [https://ableid-dev-back.theable.tech](https://ableid-dev-back.theable.tech)  
 **Продакшн-среда:** [https://faceid-back.theable.tech](https://faceid-back.theable.tech)
 
 API предназначено для инициации, обработки и завершения сессий идентификации с использованием уникальных ключей
@@ -18,6 +20,7 @@ API предназначено для инициации, обработки и 
 > Доступ предоставляется дифференцированно в зависимости от используемых ключей: для каждой среды (Production, Staging,
 > Development) применяется отдельный набор ключей, что обеспечивает независимость и изоляцию доступа.
 ---
+
 
 ## Пример успешного ответа от API по идентификации пользователя
 
