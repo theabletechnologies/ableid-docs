@@ -6,6 +6,10 @@ module.exports = {
         },
         {
             type: 'doc',
+            id: 'schema',
+        },
+        {
+            type: 'doc',
             id: 'ableid',
         },
         {
