@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.8.1">
 <title data-rh="true">Схема взаимодействия | AbleID</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://theabletechnologies.github.io/ableid-docs/schema"><meta data-rh="true" property="og:locale" content="ru"><meta data-rh="true" name="docusaurus_locale" content="ru"><meta data-rh="true" name="docsearch:language" content="ru"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Схема взаимодействия | AbleID"><meta data-rh="true" name="description" content="Схема взаимодействия"><meta data-rh="true" property="og:description" content="Схема взаимодействия"><link data-rh="true" rel="icon" href="/ableid-docs/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://theabletechnologies.github.io/ableid-docs/schema"><link data-rh="true" rel="alternate" href="https://theabletechnologies.github.io/ableid-docs/schema" hreflang="ru"><link data-rh="true" rel="alternate" href="https://theabletechnologies.github.io/ableid-docs/schema" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Схема взаимодействия","item":"https://theabletechnologies.github.io/ableid-docs/schema"}]}</script><link rel="stylesheet" href="/ableid-docs/assets/css/styles.73dea3c5.css">
-<script src="/ableid-docs/assets/js/runtime~main.d35a360e.js" defer="defer"></script>
+<script src="/ableid-docs/assets/js/runtime~main.4ab494aa.js" defer="defer"></script>
 <script src="/ableid-docs/assets/js/main.175d70b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -34,8 +34,36 @@
 </ul>
 </li>
 </ul>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-фаза-обработки">2. Фаза обработки<a href="#2-фаза-обработки" class="hash-link" aria-label="Прямая ссылка на 2. Фаза обработки" title="Прямая ссылка на 2. Фаза обработки">​</a></h2>
-<p>На этапе обработки WEB/SDK осуществляет прямое взаимодействие с AbleID</p>
+<h1>2. Прохождение процесса и обработка</h1>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="21-проверка-живости-liveness">2.1. Проверка живости (Liveness)<a href="#21-проверка-живости-liveness" class="hash-link" aria-label="Прямая ссылка на 2.1. Проверка живости (Liveness)" title="Прямая ссылка на 2.1. Проверка живости (Liveness)">​</a></h2>
+<p>После инициализации сессии пользователь проходит проверку живости, процесс которой различается в зависимости от типа операции:</p>
+<ul>
+<li>Идентификация<!-- -->
+<ul>
+<li>Пользователю отображается интерактивный модуль с указаниями для выполнения действий. На экране последовательно показываются направления, в которые необходимо повернуть голову. Пользователь следует инструкциям, выполняя требуемые движения головой, что позволяет системе убедиться в присутствии реального человека перед камерой.</li>
+</ul>
+</li>
+<li>Верификация<!-- -->
+<ul>
+<li>Процесс проверки живности упрощён и не требует от пользователя выполнения специальных действий. Снимок для верификации делается автоматически, без отображения направлений для поворота головы. Это обеспечивает более быстрое прохождение.</li>
+</ul>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="22-валидация-и-проверка-данных">2.2. Валидация и проверка данных<a href="#22-валидация-и-проверка-данных" class="hash-link" aria-label="Прямая ссылка на 2.2. Валидация и проверка данных" title="Прямая ссылка на 2.2. Валидация и проверка данных">​</a></h2>
+<p>Каждый этап процесса подвергается многоступенчатой обработке и валидации:</p>
+<ul>
+<li>Полученные биометрические данные проходят первичную проверку на качество и соответствие требованиям</li>
+<li>Система анализирует результаты проверки живости для выявления попыток мошенничества</li>
+<li>Выполняется повторная перепроверка критичных параметров для обеспечения точности результата</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="23-биометрическое-сравнение">2.3. Биометрическое сравнение<a href="#23-биометрическое-сравнение" class="hash-link" aria-label="Прямая ссылка на 2.3. Биометрическое сравнение" title="Прямая ссылка на 2.3. Биометрическое сравнение">​</a></h2>
+<p>На финальном этапе обработки WEB/SDK осуществляет прямое взаимодействие с AbleID для выполнения биометрического сравнения:</p>
+<ul>
+<li>Система сопоставляет фотографию из документа пользователя с биометрическими данными, полученными в процессе проверки живости</li>
+<li>Алгоритмы анализируют степень соответствия лица на документе и лица пользователя, проходившего верификацию</li>
+<li>На основе полученных данных формируется итоговое решение о прохождении или отклонении верификации</li>
+</ul>
+<p>Весь процесс обработки происходит в режиме реального времени, обеспечивая быстрое получение результата.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-завершение-и-уведомление">3. Завершение и уведомление<a href="#3-завершение-и-уведомление" class="hash-link" aria-label="Прямая ссылка на 3. Завершение и уведомление" title="Прямая ссылка на 3. Завершение и уведомление">​</a></h2>
 <p>По завершении процесса обработки:</p>
 <ol>
@@ -51,6 +79,6 @@
 </li>
 </ul>
 </li>
-</ol></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Страница документа"><a class="pagination-nav__link pagination-nav__link--prev" href="/ableid-docs/home"><div class="pagination-nav__sublabel">Предыдущая страница</div><div class="pagination-nav__label">Главная</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/ableid-docs/ableid"><div class="pagination-nav__sublabel">Следующая страница</div><div class="pagination-nav__label">Able ID</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#схема-взаимодействия" class="table-of-contents__link toc-highlight">Схема взаимодействия</a></li><li><a href="#1-инициализация-сессии" class="table-of-contents__link toc-highlight">1. Инициализация сессии</a></li><li><a href="#2-фаза-обработки" class="table-of-contents__link toc-highlight">2. Фаза обработки</a></li><li><a href="#3-завершение-и-уведомление" class="table-of-contents__link toc-highlight">3. Завершение и уведомление</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 AbleID</div></div></div></footer></div>
+</ol></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Страница документа"><a class="pagination-nav__link pagination-nav__link--prev" href="/ableid-docs/home"><div class="pagination-nav__sublabel">Предыдущая страница</div><div class="pagination-nav__label">Главная</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/ableid-docs/ableid"><div class="pagination-nav__sublabel">Следующая страница</div><div class="pagination-nav__label">Able ID</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#схема-взаимодействия" class="table-of-contents__link toc-highlight">Схема взаимодействия</a></li><li><a href="#1-инициализация-сессии" class="table-of-contents__link toc-highlight">1. Инициализация сессии</a></li><li><a href="#21-проверка-живости-liveness" class="table-of-contents__link toc-highlight">2.1. Проверка живости (Liveness)</a></li><li><a href="#22-валидация-и-проверка-данных" class="table-of-contents__link toc-highlight">2.2. Валидация и проверка данных</a></li><li><a href="#23-биометрическое-сравнение" class="table-of-contents__link toc-highlight">2.3. Биометрическое сравнение</a></li><li><a href="#3-завершение-и-уведомление" class="table-of-contents__link toc-highlight">3. Завершение и уведомление</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 AbleID</div></div></div></footer></div>
 </body>
 </html>
