@@ -55,5 +55,29 @@ title: Схема взаимодействия
 2. **AbleID → Партнерское приложение**: выполняется редирект на соответствующую страницу:
     - Страница успешного завершения или ошибки
     - В случае WEB-интеграции AbleID отправляет postMessage с параметрами:
-      - Тип: redirect
-      - URL: адрес для перенаправления пользователя
+      - type: redirect
+      - url: адрес для перенаправления пользователя (https://example.com/redirect)
+
+**Редиректы будут на ранее переданные статичные страницы со стороны партнера (успеха / ошибки)**
+
+---
+
+### Пример обработки postMessage перед редиректом
+
+Пример
+
+```json
+{
+  "type": "redirect",
+  "url": "https://example.com/redirect"
+}
+```
+
+Получение сообщения перед редиректом (родительское окно)
+```javascript
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'redirect' && event.data.url) {
+        window.location.href = event.data.url;
+    }
+});
+```
