@@ -6,6 +6,7 @@
 
 - [Главная](/)
 - [Схема взаимодействия](/schema.md)
+  - [Детальный процесс прохождения](/process.md)
 - [Able ID](ableid.md)
 - [Able P2P](p2p.md)
 - [Able Pay](ablepay.md)

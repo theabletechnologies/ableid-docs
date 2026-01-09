@@ -1,5 +1,5 @@
 ---
-id: ablepay
+id: ablepay-temp
 title: Able Pay
 ---
 
@@ -116,5 +116,87 @@ title: Able Pay
   "type": "FACE_SESSION_EXPIRED",
   "data": null,
   "message": "Сообщение"
+}
+```
+
+--
+
+## Привязка карты к AblePay и мерчанту
+
+**[POST]** `https://{domain}/check/start/pay/card/attach` - URL для отправки запроса
+
+### Тело запроса
+
+```json
+{
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "cardId": "i1dtVzFclm5lEh0oPsjTf",
+  "merchantId": "bIolONvGxrEGZ2mmwnVAd",
+  "pinfl": "12345678901234"
+}
+```
+
+**Описание полей:**
+
+| Поле         | Тип      | Описание               | Обязательное | Пример                           |
+| ------------ | -------- | ---------------------- | ------------ | -------------------------------- |
+| `projectId`  | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `secret`     | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `cardId`     | `string` | ID карты               | Да           | "i1dtVzFclm5lEh0oPsjTf"          |
+| `merchantId` | `string` | ID мерчанта            | Да           | "bIolONvGxrEGZ2mmwnVAd"          |
+| `pinfl`      | `string` | ПИНФЛ                  | Да           | "12345678901234"                 |
+
+### Ответы
+
+#### `Успешный ответ: 201`
+
+```json
+{
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Сообщение",
+  "data": null
+}
+```
+
+--
+
+## Отвязывание карты к AblePay и мерчанту
+
+**[POST]** `https://{domain}/check/start/pay/card/detach` - URL для отправки запроса
+
+### Тело запроса
+
+```json
+{
+  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "cardId": "i1dtVzFclm5lEh0oPsjTf",
+  "merchantId": "bIolONvGxrEGZ2mmwnVAd",
+  "pinfl": "12345678901234"
+}
+```
+
+**Описание полей:**
+
+| Поле         | Тип      | Описание               | Обязательное | Пример                           |
+| ------------ | -------- | ---------------------- | ------------ | -------------------------------- |
+| `projectId`  | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `secret`     | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `cardId`     | `string` | ID карты               | Да           | "i1dtVzFclm5lEh0oPsjTf"          |
+| `merchantId` | `string` | ID мерчанта            | Да           | "bIolONvGxrEGZ2mmwnVAd"          |
+| `pinfl`      | `string` | ПИНФЛ                  | Да           | "12345678901234"                 |
+
+### Ответы
+
+#### `Успешный ответ: 201`
+
+```json
+{
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Сообщение",
+  "data": null
 }
 ```
