@@ -21,13 +21,13 @@ title: Able Pay
 
 **Описание полей:**
 
-| Поле            | Тип                             | Описание               | Обязательное | Пример                           |
-| --------------- | ------------------------------- | ---------------------- | ------------ | -------------------------------- |
-| `projectId`     | `string`                        | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `transactionId` | `string`                        | ID транзакции          | Да           | "1"                              |
-| `secret`        | `string`                        | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
-| `lang`          | `string` (enum: ru, en, uz, oz) | Язык                   | Нет          | "ru"                             |
-| `hooks`         | `array of string`               | URLs для оповещений    | Да           | ["https://domain.back/callback"] |
+| Поле            | Тип                             | Описание                         | Обязательное | Пример                           |
+| --------------- | ------------------------------- | -------------------------------- | ------------ | -------------------------------- |
+| `projectId`     | `string`                        | ID проекта                       | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `transactionId` | `string`                        | Уникальный ID транзакции клиента | Да           | "1"                              |
+| `secret`        | `string`                        | Секретный ключ проекта           | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `lang`          | `string` (enum: ru, en, uz, oz) | Язык                             | Нет          | "ru"                             |
+| `hooks`         | `array of string`               | URLs для оповещений              | Да           | ["https://domain.back/callback"] |
 
 ### Ответы
 
