@@ -54,29 +54,35 @@ title: Able Pay
 | `fullUrl`   | `string`                        | URL сессии | Да           | "https://ableid.backend/3HQVkBm_zCZqKFbTWVrhf" |
 | `lang`      | `string` (enum: ru, en, uz, oz) | Язык окна  | Да           | "ru"                                           |
 
---
+---
 
-#### `Успешный ответ: Система выполнит отправку webhook-уведомлений с результатом обработки на все URL’ы, переданные в параметре hooks тела запроса`
+### Webhook уведомления
+
+После завершения сессии верификации система отправит webhook-уведомление на все URL, указанные в параметре `hooks`.
+
+#### `Успешная верификация (найдено одно лицо)`
+
+Webhook отправляется когда система нашла совпадение с одним лицом в базе.
 
 ```json
 {
   "statusCode": 200,
   "type": "SUCCESS",
-  "message": "string",
+  "message": "Успешно",
   "data": {
     "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "attemptId": "RFJkzaealP6XF0CspiAoq",
     "data": {
       "person": {
-        "fullName": "Test Test",
-        "document": "AA123456",
+        "fullName": "IVANOV IVAN IVANOVICH",
+        "document": "AB1234567",
         "pinfl": "12345678901234",
         "isResident": true
       },
       "personas": [
         {
-          "fullName": "Test Test",
-          "document": "AA123456",
+          "fullName": "IVANOV IVAN IVANOVICH",
+          "document": "AB1234567",
           "pinfl": "12345678901234",
           "isResident": true
         }
@@ -93,7 +99,7 @@ title: Able Pay
 | Поле       | Тип             | Описание                                                   | Опционально |
 | ---------- | --------------- | ---------------------------------------------------------- | ----------- |
 | `person`   | `object`        | Объект с данными основного лица. Если несколько лиц `null` | Да          |
-| `personas` | `array<object>` | Массив объектов с данными дополнительных лиц               | Нет         |
+| `personas` | `array<object>` | Массив объектов с данными всех найденных лиц               | Нет         |
 
 Содержимое объекта person / personas
 
@@ -104,7 +110,63 @@ title: Able Pay
 | `pinfl`      | `string`  | ПИНФЛ. Если нерезидент `null`                               | Да          |
 | `isResident` | `boolean` | Статус резидента (`true` - резидент, `false` - нерезидент). | Нет         |
 
---
+#### `Успешная верификация (найдено несколько лиц)`
+
+Webhook отправляется когда система нашла совпадения с несколькими лицами в базе.
+
+```json
+{
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно",
+  "data": {
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "attemptId": "RFJkzaealP6XF0CspiAoq",
+    "data": {
+      "person": null,
+      "personas": [
+        {
+          "fullName": "IVANOV IVAN IVANOVICH",
+          "document": "AB1234567",
+          "pinfl": "12345678901234",
+          "isResident": true
+        },
+        {
+          "fullName": "PETROV PETR PETROVICH",
+          "document": "AC7654321",
+          "pinfl": "43210987654321",
+          "isResident": true
+        }
+      ]
+    }
+  }
+}
+```
+
+**Примечание:** При нахождении нескольких лиц поле `person` будет `null`, а массив `personas` будет содержать всех найденных кандидатов.
+
+#### `Неуспешная верификация`
+
+Webhook отправляется при провале биометрической верификации (лицо не найдено в базе или не прошло проверку).
+
+```json
+{
+  "statusCode": 10106,
+  "type": "FACE_NOT_VALID",
+  "message": "Лицо не прошло проверку",
+  "data": {
+    "redirect": "https://example.com/error"
+  }
+}
+```
+
+**Описание полей:**
+
+| Поле       | Тип      | Описание                                    |
+| ---------- | -------- | ------------------------------------------- |
+| `redirect` | `string` | URL для редиректа на страницу ошибки        |
+
+---
 
 #### `Ошибка: 400`
 

@@ -1,193 +1,47 @@
 ---
 id: hooks
-title: Хуки
+title: Получение данных (Webhooks)
 ---
 
----
+# Получение данных (Webhooks)
 
-## Получение данных по прописке
+> **ВАЖНО:**
+>
+> 1. **Статические URL:** Данные отправляются **ТОЛЬКО** на URL-адреса, заранее прописанные в конфигурации вашего проекта. На динамические адреса отправка персональных данных **НЕ** производится.
+> 2. **Типы хуков:**
+>    - Информация о резидентах
+>    - Информация о пересечении нерезидента
+>    - Получение прописки резидента
+>    - Получение фотографии пользователя
+> 3. **Отправка:** Вебхуки с данными приходят **ТОЛЬКО** в случае успешного прохождения идентификации/сессии.
 
-**[POST]** `https://{domain}/check/registration` - URL для отправки запроса
+![Схема взаимодействия](/img/schema-hooks.png)
 
-### Тело запроса
+## Необходимые Webhook URL
 
-```json
-{
-  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "pinfl": "12345678901234",
-  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
-}
-```
+Для работы с хуками необходимо настроить статические URL в конфигурации проекта. Для настройки или обновления URL обратитесь к нашей команде поддержки:
 
-**Описание полей:**
-
-| Поле        | Тип      | Описание               | Обязательное | Пример                           |
-|-------------|----------|------------------------|--------------|----------------------------------|
-| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
-| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
-
-### Ответы
-
-#### `Успешный ответ будет возвращён на заранее указанный статический URL получения прописки (см. пример ниже)`
-
-#### `Ошибка: 400`
-
-Описание: Пример ошибки в получении данных
-
-```json
-{
-  "statusCode": 10101,
-  "type": "FACE_SESSION_EXPIRED",
-  "data": null,
-  "message": "Сообщение"
-}
-```
+| Метод API                   | Webhook URL в конфиге      | Описание                               |
+|-----------------------------|----------------------------|----------------------------------------|
+| `/check/get_passport`       | `PERSON_WEBHOOK_URL`       | Получение паспортных данных резидента  |
+| `/check/get_person`         | `PERSON_WEBHOOK_URL`       | Получение полной информации + прописка |
+| `/check/registration`       | `REGISTRATION_WEBHOOK_URL` | Получение только прописки              |
+| `/check/get_photo`          | `PHOTO_WEBHOOK_URL`        | Получение фото (Base64)                |
+| `/check/get_foreign_person` | `FOREIGN_WEBHOOK_URL`      | Данные пересечения нерезидента         |
 
 ---
 
-**Описание:** Сервис уведомляет вашу систему о событиях, отправляя POST-запросы на заранее предоставленные статичные
-URL-адреса
+# Резиденты
 
-## `Хук получения прописки`
+В данном разделе описаны хуки для работы с данными резидентов (граждан РУз и лиц с ПИНФЛ).
 
-**Описание:** Получение прописки
+> **Напоминание:** Данные придут только на заранее прописанный URL и только при успешной сессии.
 
-### Ответы
+## 1. Получение паспорта
 
-```json
-{
-  "statusCode": 200,
-  "type": "SUCCESS",
-  "message": "Сообщение",
-  "data": {
-    "signature": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
-    "attemptId": "RFJkzaealP6XF0CspiAoq",
-    "data": {
-      "address": null,
-      "cadastre": null,
-      "country": null,
-      "countryId": null,
-      "region": null,
-      "regionId": null,
-      "district": null,
-      "districtId": null,
-      "maxala": null,
-      "maxalaId": null,
-      "street": null,
-      "streetId": null
-    }
-  }
-}
-```
+**Инициализация:** `[POST] https://{domain}/check/get_passport`
 
-**Описание полей:**
-
-| Поле         | Тип данных       | Описание                   |
-|--------------|------------------|----------------------------|
-| `address`    | `string \| null` | Адрес                      |
-| `cadastre`   | `string \| null` | Кадастровый номер          |
-| `country`    | `string \| null` | Данные о стране            |
-| `countryId`  | `string \| null` | ID страны                  |
-| `region`     | `string \| null` | Данные о регионе (области) |
-| `regionId`   | `string \| null` | ID региона (области)       |
-| `district`   | `string \| null` | Данные о районе            |
-| `districtId` | `string \| null` | ID района                  |
-| `maxala`     | `string \| null` | Данные о махалле           |
-| `maxalaId`   | `string \| null` | ID махалли                 |
-| `street`     | `string \| null` | Данные о улице             |
-| `streetId`   | `string \| null` | ID улицы                   |
-
----
-
-## Запрос на получение пересечения нерезидента
-
-**[POST]** `https://{domain}/check/get_foreign_person` - URL для отправки запроса
-
-### Тело запроса
-
-```json
-{
-  "document": "AB12345678",
-  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
-  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
-}
-```
-
-**Описание полей:**
-
-| Поле        | Тип      | Описание                        | Обязательное | Пример                           |
-|-------------|----------|---------------------------------|--------------|----------------------------------|
-| `document`  | `string` | Серия и номер паспорта (слитно) | Да           | AB12345678                       |
-| `projectId` | `string` | ID проекта                      | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `attemptId` | `string` | ID сессии                       | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `secret`    | `string` | Секретный ключ проекта          | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
-
-### Ответы
-
-#### `Успешный ответ будет возвращён на заранее указанный статический URL получения пересечения нерезидента (см. пример ниже)`
-
----
-
-## `Хук получения пересечения нерезидентов`
-
-**Описание:** Получение пересечения нерезидента
-
-### Ответы
-
-```json
-{
-  "statusCode": 200,
-  "type": "SUCCESS",
-  "message": "string",
-  "data": {
-    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
-    "attemptId": "RFJkzaealP6XF0CspiAoq",
-    "data": {
-      "person": {
-        "document": "string",
-        "reg_date": "string",
-        "citizenship": "string",
-        "full_name": "string",
-        "birth_date": "string"
-      }
-    }
-  }
-}
-```
-
-**Описание полей:**
-
-| Поле                  | Тип данных       | Описание                            |
-|-----------------------|------------------|-------------------------------------|
-| `document`            | `string`         | Серия и номер паспорта              |
-| `reg_date`            | `string`         | Дата въезда                         |
-| `citizenship`         | `string`         | Гражданство                         |
-| `full_name`           | `string`         | Ф.И.О.                              |
-| `birth_date`          | `string`         | Дата рождения                       |
-
----
-
-## Запрос на получение паспорта
-
-**[POST]** `https://{domain}/check/get_passport` - URL для отправки запроса
-
-### Тело запроса
-
-```json
-{
-  "pinfl": "12345678901234",
-  "birthDate": "12.12.2000",
-  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
-  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
-}
-```
-
-**Описание полей:**
+**Входные параметры:**
 
 | Поле        | Тип      | Описание               | Обязательное | Пример                           |
 |-------------|----------|------------------------|--------------|----------------------------------|
@@ -197,38 +51,33 @@ URL-адреса
 | `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
 | `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 
-### Ответы
+### `Хук получения пасспорта`
 
-#### `Успешный ответ будет возвращён на заранее указанный статический URL получения паспорта (см. пример ниже)`
+**Куда приходит:** На статический URL для паспорта.
 
----
-
-## `Хук получения паспорта`
-
-**Описание:** Получение паспорта
-
-### Ответы
+**Условие:** Успешная сессия.
 
 ```json
 {
   "statusCode": 200,
   "type": "SUCCESS",
-  "message": "Сообщение",
+  "message": "Успешно",
   "data": {
-    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "attemptId": "RFJkzaealP6XF0CspiAoq",
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "lang": "ru",
     "data": {
-      "attemptId": "",
-      "surname": "",
-      "name": "",
-      "lastName": "",
-      "document": "",
-      "sex": 0,
-      "passportGivePlace": "",
+      "attemptId": "RFJkzaealP6XF0CspiAoq",
+      "surname": "IVANOV",
+      "name": "IVAN",
+      "lastName": "IVANOVICH",
+      "document": "AB1234567",
+      "sex": 1,
+      "passportGivePlace": "IIV",
       "passportGivePlaceId": 0,
-      "passportDateBegin": "",
-      "passportDateEnd": "",
-      "passportType": ""
+      "passportDateBegin": "2020-01-01",
+      "passportDateEnd": "2030-01-01",
+      "passportType": "IDMS_RECV_CITIZ_DOCUMENTS"
     }
   }
 }
@@ -250,38 +99,13 @@ URL-адреса
 | `passportDateEnd`     | `string`         | Дата окончания действия документа   |
 | `passportType`        | `string \| null` | Тип документа (см. справочник ниже) |
 
-### Справочник типов документов
-
-| Код                            | Наименование                              |
-|--------------------------------|-------------------------------------------|
-| `IDMS_RECV_IP_DOCUMENTS`       | Загранпаспорт гражданина РУз              |
-| `IDMS_RECV_CITIZ_DOCUMENTS`    | Общегражданский биометрический паспорт    |
-| `IDMS_RECV_LBG_DOCUMENTS`      | Проездной документ ЛБГ                    |
-| `IDMS_RECV_MVD_IDCARD_CITIZEN` | ID-карта гражданина Республики Узбекистан |
-| `IDMS_RECV_MVD_IDCARD_FOREIGN` | ID-карта иностранного гражданина          |
-| `IDMS_RECV_MVD_IDCARD_LBG`     | ID-карта ЛБГ                              |
-| `IDMS_RECV_MVD_IDCARD_NEWBORN` | ID-карта новорожденного                   |
-| `IDMS_RECV_MJ_BIRTH_CERTS`     | Свидетельства о рождении                  |
-
 ---
 
-## Запрос на получение полной информации о человеке
+## 2. Получение полной информации
 
-**[POST]** `https://{domain}/check/get_person` - URL для отправки запроса
+**Инициализация:** `[POST] https://{domain}/check/get_person`
 
-### Тело запроса
-
-```json
-{
-  "pinfl": "12345678901234",
-  "birthDate": "12.12.2000",
-  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
-  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
-}
-```
-
-**Описание полей:**
+**Входные параметры:**
 
 | Поле        | Тип      | Описание               | Обязательное | Пример                           |
 |-------------|----------|------------------------|--------------|----------------------------------|
@@ -291,77 +115,75 @@ URL-адреса
 | `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
 | `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
 
-### Ответы
+### `Хук полной информации`
 
-#### `Успешный ответ будет возвращён на заранее указанный статический URL получения паспорта (см. пример ниже)`
+**Куда приходит:** На статический URL для Person Info.
 
-## `Хук получения полной информации о человеке`
+**Условие:** Успешная сессия.
 
-**Описание:** Получение полной информации о человеке. Все информация об прописке опциональная, временная прописка
-приходит массивом, если данные есть
-
-### Ответы
+Содержит объект `person` (паспортные данные) и `registration` (прописка).
 
 ```json
 {
   "statusCode": 200,
   "type": "SUCCESS",
-  "message": "Сообщение",
+  "message": "Успешно",
   "data": {
-    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "attemptId": "RFJkzaealP6XF0CspiAoq",
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "lang": "ru",
     "data": {
       "person": {
-        "attemptId": "",
-        "pinfl": "",
-        "surname": "",
-        "name": "",
-        "lastName": "",
-        "document": "",
-        "sex": "",
-        "passportGivePlace": "",
-        "passportGivePlaceId": "",
-        "passportDateBegin": "",
-        "passportDateEnd": "",
-        "passportType": "",
-        "passportTypeTitle": "",
-        "passportTypeId": "",
-        "passportTypeCbuId": "",
-        "birthDate": "",
-        "birthPlace": "",
-        "birthPlaceId": "",
-        "birthPlaceCbuId": "",
-        "birthCountry": "",
-        "birthCountryId": "",
-        "birthCountryCbuId": "",
+        "attemptId": "RFJkzaealP6XF0CspiAoq",
+        "pinfl": "12345678901234",
+        "surname": "IVANOV",
+        "name": "IVAN",
+        "lastName": "IVANOVICH",
+        "document": "AB1234567",
+        "sex": 1,
+        "passportGivePlace": "IIV",
+        "passportGivePlaceId": "1",
+        "passportDateBegin": "2020-01-01",
+        "passportDateEnd": "2030-01-01",
+        "passportType": "IDMS_RECV_CITIZ_DOCUMENTS",
+        "passportTypeTitle": "Паспорт",
+        "passportTypeId": "1",
+        "passportTypeCbuId": "1",
+        "birthDate": "2000-01-01",
+        "birthPlace": "Tashkent",
+        "birthPlaceId": "1",
+        "birthPlaceCbuId": "1",
+        "birthCountry": "Uzbekistan",
+        "birthCountryId": "1",
+        "birthCountryCbuId": "1",
         "liveStatus": true,
-        "nationality": "",
-        "nationalityId": "",
-        "nationalityCbuId": "",
-        "citizenship": "",
-        "citizenshipId": "",
-        "citizenshipCbuId": ""
+        "nationality": "Uzbek",
+        "nationalityId": "1",
+        "nationalityCbuId": "1",
+        "citizenship": "Uzbekistan",
+        "citizenshipId": "1",
+        "citizenshipCbuId": "1"
       },
       "registration": {
         "permanentRegistration": {
-          "address": null,
-          "cadastre": null,
-          "country": null,
-          "countryId": null,
-          "countryCbuId": null,
-          "region": null,
-          "regionId": null,
-          "regionCbuId": null,
-          "district": null,
-          "districtId": null,
-          "districtCbuId": null,
-          "maxala": null,
-          "maxalaId": null,
-          "maxalaCbuId": null,
-          "street": null,
-          "streetId": null,
-          "streetCbuId": null,
-          "registrationDate": null
+          "address": "г. Ташкент, ул. Амира Темура, 1",
+          "cadastre": "1234567890",
+          "country": "Uzbekistan",
+          "countryId": "1",
+          "countryCbuId": "1",
+          "region": "Tashkent",
+          "regionId": "1",
+          "regionCbuId": "1",
+          "district": "Yunusabad",
+          "districtId": "1",
+          "districtCbuId": "1",
+          "maxala": "Mahalla",
+          "maxalaId": "1",
+          "maxalaCbuId": "1",
+          "street": "Amir Temur",
+          "streetId": "1",
+          "streetCbuId": "1",
+          "registrationDate": "2020-01-01"
         },
         "temporaryRegistrations": null
       }
@@ -406,6 +228,58 @@ URL-адреса
 
 ---
 
+## 3. Получение прописки
+
+**Инициализация:** `[POST] https://{domain}/check/registration`
+
+**Входные параметры:**
+
+| Поле        | Тип      | Описание               | Обязательное | Пример                           |
+|-------------|----------|------------------------|--------------|----------------------------------|
+| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
+| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+
+### `Хук получения прописки`
+
+**Куда приходит:** На статический URL для прописки.
+
+**Условие:** Успешная сессия.
+
+```json
+{
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно",
+  "data": {
+    "attemptId": "RFJkzaealP6XF0CspiAoq",
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "lang": "ru",
+    "data": {
+      "address": "г. Ташкент, ул. Амира Темура, 1",
+      "cadastre": "1234567890",
+      "country": "Uzbekistan",
+      "countryId": "1",
+      "countryCbuId": "1",
+      "region": "Tashkent",
+      "regionId": "1",
+      "regionCbuId": "1",
+      "district": "Yunusabad",
+      "districtId": "1",
+      "districtCbuId": "1",
+      "maxala": "Mahalla",
+      "maxalaId": "1",
+      "maxalaCbuId": "1",
+      "street": "Amir Temur",
+      "streetId": "1",
+      "streetCbuId": "1",
+      "registrationDate": "2020-01-01"
+    }
+  }
+}
+```
+
 **Описание полей: Структуры данных прописки (permanentRegistration и temporaryRegistrations)**
 
 | Поле               | Тип              | Описание                      |
@@ -431,63 +305,113 @@ URL-адреса
 
 ---
 
----
+## 4. Получение фотографии
 
-## Запрос на получение хука фотографии
+**Инициализация:** `[POST] https://{domain}/check/get_photo`
 
-**[POST]** `https://{domain}/check/get_photo`- URL для отправки запроса
+### `Хук получения фото`
 
-### Тело запроса
+**Куда приходит:** На статический URL для фото.
 
-```json
-{
-  "projectId": "yDkeHoHWXVqQ9M_URZUtb",
-  "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
-}
-```
-
-**Описание полей:**
-
-| Поле        | Тип      | Описание               | Обязательное | Пример                           |
-|-------------|----------|------------------------|--------------|----------------------------------|
-| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
-
-### Ответы
-
-#### `Успешный ответ: Придет на хук ранее прописанный для получения фотографии (см. пример ниже)`
-
----
-
-**Описание:** Сервис уведомляет вашу систему о событиях, отправляя POST-запросы на заранее предоставленные статичные
-URL-адреса
-
-## `Хук получения фотографии`
-
-**Описание:** Получение фотографии
-
-### Ответы
+**Условие:** Успешная сессия.
 
 ```json
 {
   "statusCode": 200,
   "type": "SUCCESS",
-  "message": "Сообщение",
+  "message": "Успешно",
   "data": {
-    "crc": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "attemptId": "RFJkzaealP6XF0CspiAoq",
-    "transactionId": "RFJkzaealP6XF0CspiAoq",
-    "photo": "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo="
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "lang": "ru",
+    "data": {
+      "crc": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+      "attemptId": "RFJkzaealP6XF0CspiAoq",
+      "transactionId": "RFJkzaealP6XF0CspiAoq",
+      "photo": "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo="
+    }
   }
 }
 ```
 
 **Описание полей:**
 
-| Поле       | Тип данных       | Описание                       |
-|------------|------------------|--------------------------------|
-| `photo`    | `string`         | Base64 фотография пользователя |
+| Поле    | Тип данных | Описание                       |
+|---------|------------|--------------------------------|
+| `photo` | `string`   | Base64 фотография пользователя |
 
 ---
+
+# Нерезиденты
+
+В данном разделе описаны хуки для работы с иностранными гражданами.
+
+> **Напоминание:** Данные придут только на заранее прописанный URL и только при успешной сессии.
+
+## 1. Получение пересечения
+
+**Инициализация:** `[POST] https://{domain}/check/get_foreign_person`
+
+**Входные параметры:**
+
+| Поле        | Тип      | Описание                        | Обязательное | Пример                           |
+|-------------|----------|---------------------------------|--------------|----------------------------------|
+| `document`  | `string` | Серия и номер паспорта (слитно) | Да           | AB12345678                       |
+| `projectId` | `string` | ID проекта                      | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии                       | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта          | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+
+### `Хук получения пересечения`
+
+**Куда приходит:** На статический URL для нерезидентов.
+
+**Условие:** Успешная сессия.
+
+```json
+{
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно",
+  "data": {
+    "attemptId": "RFJkzaealP6XF0CspiAoq",
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "lang": "ru",
+    "data": {
+      "person": {
+        "document": "AB12345678",
+        "reg_date": "2024-01-01",
+        "citizenship": "RUSSIA",
+        "full_name": "IVANOV IVAN",
+        "birth_date": "2000-01-01"
+      }
+    }
+  }
+}
+```
+
+**Описание полей:**
+
+| Поле          | Тип данных | Описание               |
+|---------------|------------|------------------------|
+| `document`    | `string`   | Серия и номер паспорта |
+| `reg_date`    | `string`   | Дата въезда            |
+| `citizenship` | `string`   | Гражданство            |
+| `full_name`   | `string`   | Ф.И.О.                 |
+| `birth_date`  | `string`   | Дата рождения          |
+
+---
+
+# Справочники
+
+### Справочник типов документов
+
+| Код                            | Наименование                              |
+|--------------------------------|-------------------------------------------|
+| `IDMS_RECV_IP_DOCUMENTS`       | Загранпаспорт гражданина РУз              |
+| `IDMS_RECV_CITIZ_DOCUMENTS`    | Общегражданский биометрический паспорт    |
+| `IDMS_RECV_LBG_DOCUMENTS`      | Проездной документ ЛБГ                    |
+| `IDMS_RECV_MVD_IDCARD_CITIZEN` | ID-карта гражданина Республики Узбекистан |
+| `IDMS_RECV_MVD_IDCARD_FOREIGN` | ID-карта иностранного гражданина          |
+| `IDMS_RECV_MVD_IDCARD_LBG`     | ID-карта ЛБГ                              |
+| `IDMS_RECV_MVD_IDCARD_NEWBORN` | ID-карта новорожденного                   |
+| `IDMS_RECV_MJ_BIRTH_CERTS`     | Свидетельства о рождении                  |
