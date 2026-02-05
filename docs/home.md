@@ -19,36 +19,77 @@ API предназначено для инициации, обработки и 
 
 ---
 
-## Пример успешного ответа от API по идентификации пользователя
+## Пример ответа создания сессии
 
-После идентификации результат отправляется на указанный URL.
+При создании сессии идентификации API возвращает следующий ответ:
 
 ```json
 {
   "statusCode": 200,
   "type": "SUCCESS",
-  "message": "Сообщение",
+  "message": "Успешно",
   "data": {
-    "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-    "fullUrl": "https://ableid.domain/3HQVkBm_zCZqKFbTWVrhf",
-    "lang": "ru"
+    "attemptId": "NS7gSQGA2JwwbLVTPwHY1",
+    "lang": "ru",
+    "fullUrl": "https://faceid-back.theable.tech/public/NS7gSQGA2JwwbLVTPwHY1?lang=ru",
+    "redirect": "/check/redirect/NS7gSQGA2JwwbLVTPwHY1"
   }
 }
 ```
 
-| Поле            | Тип данных | Описание                              |
-| --------------- | ---------- | ------------------------------------- |
-| `signature`     | `string`   | Код верификации (см. справочник ниже) |
-| `transactionId` | `string`   | Уникальный ID транзакции клиента      |
-| `attemptId`     | `string`   | ID сессии AbleID                      |
+| Поле        | Тип данных | Описание                                    |
+|-------------|------------|---------------------------------------------|
+| `attemptId` | `string`   | ID сессии AbleID                            |
+| `lang`      | `string`   | Язык интерфейса (ru, uz, en)                |
+| `fullUrl`   | `string`   | Полный URL для перенаправления пользователя |
+| `redirect`  | `string`   | Путь редиректа после завершения сессии      |
 
-> Поле `signature` используется для проверки подлинности запроса от AbleID. Оно подтверждает, что запрос не был
-> подделан.
+> **Важно:** Поле `hash` НЕ возвращается на создании сессии. Оно приходит только на вебхуках.
 
-### Верификация `signature`:
+---
 
+## О поле `hash`
+
+Поле `hash` — это код верификации, который используется для проверки подлинности запросов от AbleID.
+
+### Где используется `hash`:
+
+**В вебхуках** — отправляется на ваш сервер для верификации после завершения идентификации:
+
+```json
+{
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно",
+  "data": {
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
+    "transactionId": "your-transaction-id",
+    "data": {}
+  }
+}
 ```
+
+### Как генерируется `hash`:
+
+```javascript
 sha1(sha1(projectId + secret).toUpperCase() + attemptId).toUpperCase()
+```
+
+### Как проверить `hash`:
+
+При получении запроса от AbleID (например, на вебхук), вы должны проверить подлинность, пересчитав hash:
+
+```javascript
+const calculatedHash = sha1(
+  sha1(projectId + secret).toUpperCase() + attemptId
+).toUpperCase();
+
+if (calculatedHash === receivedHash) {
+  // Запрос подлинный
+} else {
+  // Запрос подделан
+}
 ```
 
 ---
