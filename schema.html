@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.8.1">
 <title data-rh="true">Схема взаимодействия | AbleID</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://theabletechnologies.github.io/ableid-docs/schema"><meta data-rh="true" property="og:locale" content="ru"><meta data-rh="true" name="docusaurus_locale" content="ru"><meta data-rh="true" name="docsearch:language" content="ru"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Схема взаимодействия | AbleID"><meta data-rh="true" name="description" content="Схема взаимодействия"><meta data-rh="true" property="og:description" content="Схема взаимодействия"><link data-rh="true" rel="icon" href="/ableid-docs/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://theabletechnologies.github.io/ableid-docs/schema"><link data-rh="true" rel="alternate" href="https://theabletechnologies.github.io/ableid-docs/schema" hreflang="ru"><link data-rh="true" rel="alternate" href="https://theabletechnologies.github.io/ableid-docs/schema" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Схема взаимодействия","item":"https://theabletechnologies.github.io/ableid-docs/schema"}]}</script><link rel="stylesheet" href="/ableid-docs/assets/css/styles.73dea3c5.css">
-<script src="/ableid-docs/assets/js/runtime~main.85222d6c.js" defer="defer"></script>
+<script src="/ableid-docs/assets/js/runtime~main.b034be5c.js" defer="defer"></script>
 <script src="/ableid-docs/assets/js/main.27ff1747.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -16,6 +16,61 @@
 <blockquote>
 <p><strong>Для получения информации о получении определенных данных (паспорт, прописка, фото, данные нерезидента) через API и настройке Webhooks перейдите в раздел <a href="/ableid-docs/hooks">Webhooks</a>.</strong></p>
 </blockquote>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="идентификация-vs-верификация">Идентификация vs Верификация<a href="#идентификация-vs-верификация" class="hash-link" aria-label="Прямая ссылка на Идентификация vs Верификация" title="Прямая ссылка на Идентификация vs Верификация">​</a></h2>
+<p>AbleID предоставляет два типа биометрических проверок: <strong>Идентификация</strong> и <strong>Верификация</strong>. Важно понимать разницу между ними для правильного выбора метода.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="идентификация-identification">Идентификация (Identification)<a href="#идентификация-identification" class="hash-link" aria-label="Прямая ссылка на Идентификация (Identification)" title="Прямая ссылка на Идентификация (Identification)">​</a></h3>
+<p><strong>Назначение:</strong> Первичная биометрическая проверка личности пользователя с полной проверкой живости (liveness).</p>
+<p><strong>Когда использовать:</strong></p>
+<ul>
+<li>Первичная регистрация пользователя</li>
+<li>Важные операции, требующие высокого уровня безопасности</li>
+<li>KYC процедуры</li>
+<li>Открытие счетов, кредитование</li>
+</ul>
+<p><strong>Особенности процесса:</strong></p>
+<ul>
+<li>Полная проверка живости (liveness) с активными действиями</li>
+<li>Пользователь выполняет повороты головы по указаниям системы</li>
+<li>Более длительный процесс (~30-60 секунд)</li>
+<li>Максимальный уровень защиты от спуфинга</li>
+</ul>
+<p><strong>API методы:</strong></p>
+<ul>
+<li><code>/check/start/second</code> — идентификация резидентов</li>
+<li><code>/check/start/foreign</code> — идентификация нерезидентов</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="верификация-verification">Верификация (Verification)<a href="#верификация-verification" class="hash-link" aria-label="Прямая ссылка на Верификация (Verification)" title="Прямая ссылка на Верификация (Verification)">​</a></h3>
+<p><strong>Назначение:</strong> Быстрая повторная проверка личности ранее идентифицированного пользователя.</p>
+<p><strong>Когда использовать:</strong></p>
+<ul>
+<li>Повторный вход в систему</li>
+<li>Подтверждение транзакций</li>
+<li>Регулярные операции после первичной идентификации</li>
+<li>Случаи, где важна скорость процесса</li>
+</ul>
+<p><strong>Особенности процесса:</strong></p>
+<ul>
+<li>Упрощенная проверка живости</li>
+<li>Снимок делается автоматически без активных действий</li>
+<li>Быстрый процесс (~10-20 секунд)</li>
+<li>Сохранен достаточный уровень безопасности для повторных проверок</li>
+</ul>
+<p><strong>API методы:</strong></p>
+<ul>
+<li><code>/check/start/verification/second</code> — верификация резидентов</li>
+<li><code>/check/start/verification/foreign</code> — верификация нерезидентов</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="сравнительная-таблица">Сравнительная таблица<a href="#сравнительная-таблица" class="hash-link" aria-label="Прямая ссылка на Сравнительная таблица" title="Прямая ссылка на Сравнительная таблица">​</a></h3>
+<table><thead><tr><th>Параметр</th><th>Идентификация</th><th>Верификация</th></tr></thead><tbody><tr><td><strong>Проверка живости</strong></td><td>Полная (с поворотами головы)</td><td>Упрощенная (автоматическая)</td></tr><tr><td><strong>Длительность</strong></td><td>~30-60 секунд</td><td>~10-20 секунд</td></tr><tr><td><strong>Уровень безопасности</strong></td><td>Максимальный</td><td>Высокий</td></tr><tr><td><strong>Использование</strong></td><td>Первичная проверка</td><td>Повторные проверки</td></tr><tr><td><strong>User Experience</strong></td><td>Требует активных действий</td><td>Пассивная проверка</td></tr></tbody></table>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="рекомендации">Рекомендации<a href="#рекомендации" class="hash-link" aria-label="Прямая ссылка на Рекомендации" title="Прямая ссылка на Рекомендации">​</a></h3>
+<ol>
+<li><strong>Используйте Идентификацию</strong> для первого взаимодействия с пользователем и критичных операций</li>
+<li><strong>Используйте Верификацию</strong> для повторных проверок и регулярных операций</li>
+<li>Периодически (например, раз в месяц) проводите полную Идентификацию даже для существующих пользователей</li>
+<li>Для особо критичных операций (крупные переводы, изменение реквизитов) используйте Идентификацию независимо от статуса пользователя</li>
+</ol>
+<hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-инициализация-сессии">1. Инициализация сессии<a href="#1-инициализация-сессии" class="hash-link" aria-label="Прямая ссылка на 1. Инициализация сессии" title="Прямая ссылка на 1. Инициализация сессии">​</a></h2>
 <p>Партнерское приложение отправляет запрос в партнерский backend для инициализации новой сессии. Партнерский backend выполняет следующие действия:</p>
 <ul>
@@ -25,11 +80,7 @@
 <li><strong>Нерезидент</strong>: Серия и номер паспорта</li>
 </ul>
 </li>
-<li>Получает от AbleID параметры сессии: идентификатор (attemptId) и URL для загрузки интерфейса в WebView (fullUrl)<!-- -->
-<ul>
-<li>Время жизни сессии 10 мин</li>
-</ul>
-</li>
+<li>Получает от AbleID параметры сессии: идентификатор (attemptId) и URL для загрузки интерфейса в WebView (fullUrl)</li>
 <li>Возвращает в партнерское приложение данные в зависимости от типа интеграции:<!-- -->
 <ul>
 <li><strong>WEB</strong>: Прямая ссылка для открытия в браузере</li>
@@ -37,6 +88,26 @@
 </ul>
 </li>
 </ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="время-жизни-сессии">Время жизни сессии<a href="#время-жизни-сессии" class="hash-link" aria-label="Прямая ссылка на Время жизни сессии" title="Прямая ссылка на Время жизни сессии">​</a></h3>
+<p>Каждая созданная сессия имеет <strong>ограниченное время жизни — 10 минут</strong> с момента создания.</p>
+<p><strong>Что происходит при истечении времени:</strong></p>
+<ul>
+<li><strong>Сессия становится недействительной:</strong> Нельзя начать или продолжить процесс идентификации</li>
+<li><strong>Webhook НЕ отправляется:</strong> Уведомления отправляются только при явном завершении сессии (успех/ошибка)</li>
+<li><strong>Ошибка при попытке использования:</strong> При обращении к истекшей сессии возвращается ошибка:<!-- -->
+<div class="language-json codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-json codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token property" style="color:#36acaa">&quot;statusCode&quot;</span><span class="token operator" style="color:#393A34">:</span><span class="token plain"> </span><span class="token number" style="color:#36acaa">10101</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token property" style="color:#36acaa">&quot;type&quot;</span><span class="token operator" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;FACE_SESSION_EXPIRED&quot;</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token property" style="color:#36acaa">&quot;message&quot;</span><span class="token operator" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;Время сессии истекло&quot;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">}</span><br></span></code></pre></div></div>
+</li>
+</ul>
+<p><strong>Рекомендации:</strong></p>
+<ul>
+<li>Создавайте новую сессию непосредственно перед началом процесса идентификации</li>
+<li>Не создавайте сессии заранее &quot;про запас&quot;</li>
+<li>При получении ошибки <code>FACE_SESSION_EXPIRED</code> создайте новую сессию</li>
+<li>Информируйте пользователя о необходимости завершить процесс в течение 10 минут</li>
+</ul>
+<blockquote>
+<p><strong>Важно:</strong> Время жизни сессии <strong>нельзя продлить</strong>. Если время истекло, необходимо создать новую сессию с новым <code>attemptId</code>.</p>
+</blockquote>
 <h1>2. Прохождение процесса и обработка</h1>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="21-проверка-живости-liveness">2.1. Проверка живости (Liveness)<a href="#21-проверка-живости-liveness" class="hash-link" aria-label="Прямая ссылка на 2.1. Проверка живости (Liveness)" title="Прямая ссылка на 2.1. Проверка живости (Liveness)">​</a></h2>
 <p>После инициализации сессии пользователь проходит проверку живости, процесс которой различается в зависимости от типа операции:</p>
@@ -83,12 +154,28 @@
 </ul>
 </li>
 </ol>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="настройка-redirect-url">Настройка Redirect URL<a href="#настройка-redirect-url" class="hash-link" aria-label="Прямая ссылка на Настройка Redirect URL" title="Прямая ссылка на Настройка Redirect URL">​</a></h3>
+<blockquote>
+<p><strong>ВАЖНО:</strong></p>
+<ol>
+<li><strong>Статические URL:</strong> В конфигурации проекта прописываются <strong>2 статических URL</strong> для редиректа пользователя:<!-- -->
+<ul>
+<li>URL успешного прохождения идентификации/верификации</li>
+<li>URL при ошибке или неуспешном прохождении</li>
+</ul>
+</li>
+<li><strong>Изменение URL:</strong> Redirect URL изменяются <strong>ТОЛЬКО</strong> по запросу в службу поддержки. Динамическое изменение redirect URL в процессе работы <strong>НЕ</strong> поддерживается.</li>
+<li><strong>Обязательная настройка:</strong> Для работы системы необходимо заранее предоставить команде поддержки оба URL для их регистрации в конфигурации проекта.</li>
+</ol>
+</blockquote>
 <p><strong>Редиректы будут на ранее переданные статичные страницы со стороны партнера (успеха / ошибки)</strong></p>
+<p>Для настройки или обновления Redirect URL обратитесь к нашей команде поддержки:</p>
+<table><thead><tr><th>Назначение</th><th>Описание</th></tr></thead><tbody><tr><td><strong>URL успеха</strong></td><td>Страница, на которую перенаправляется пользователь при успешной идентификации/верификации</td></tr><tr><td><strong>URL ошибки</strong></td><td>Страница, на которую перенаправляется пользователь при неуспешном прохождении или ошибке</td></tr></tbody></table>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="пример-обработки-postmessage-перед-редиректом">Пример обработки postMessage перед редиректом<a href="#пример-обработки-postmessage-перед-редиректом" class="hash-link" aria-label="Прямая ссылка на Пример обработки postMessage перед редиректом" title="Прямая ссылка на Пример обработки postMessage перед редиректом">​</a></h2>
 <p>Пример</p>
 <div class="language-json codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-json codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token property" style="color:#36acaa">&quot;type&quot;</span><span class="token operator" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;redirect&quot;</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token property" style="color:#36acaa">&quot;url&quot;</span><span class="token operator" style="color:#393A34">:</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;https://example.com/redirect&quot;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">}</span><br></span></code></pre></div></div>
 <p>Получение сообщения перед редиректом (родительское окно)</p>
-<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token dom variable" style="color:#36acaa">window</span><span class="token punctuation" style="color:#393A34">.</span><span class="token method function property-access" style="color:#d73a49">addEventListener</span><span class="token punctuation" style="color:#393A34">(</span><span class="token string" style="color:#e3116c">&quot;message&quot;</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"> </span><span class="token keyword" style="color:#00009f">function</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">(</span><span class="token parameter">event</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token keyword control-flow" style="color:#00009f">if</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain">event</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">data</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">type</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">===</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;redirect&quot;</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">&amp;&amp;</span><span class="token plain"> event</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">data</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">url</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    </span><span class="token dom variable" style="color:#36acaa">window</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">location</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">href</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> event</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">data</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">url</span><span class="token punctuation" style="color:#393A34">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token punctuation" style="color:#393A34">}</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">}</span><span class="token punctuation" style="color:#393A34">)</span><span class="token punctuation" style="color:#393A34">;</span><br></span></code></pre></div></div></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Страница документа"><a class="pagination-nav__link pagination-nav__link--prev" href="/ableid-docs/home"><div class="pagination-nav__sublabel">Предыдущая страница</div><div class="pagination-nav__label">Главная</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/ableid-docs/process"><div class="pagination-nav__sublabel">Следующая страница</div><div class="pagination-nav__label">Детальный процесс прохождения</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#схема-взаимодействия" class="table-of-contents__link toc-highlight">Схема взаимодействия</a></li><li><a href="#1-инициализация-сессии" class="table-of-contents__link toc-highlight">1. Инициализация сессии</a></li><li><a href="#21-проверка-живости-liveness" class="table-of-contents__link toc-highlight">2.1. Проверка живости (Liveness)</a></li><li><a href="#22-валидация-и-проверка-данных" class="table-of-contents__link toc-highlight">2.2. Валидация и проверка данных</a></li><li><a href="#23-биометрическое-сравнение" class="table-of-contents__link toc-highlight">2.3. Биометрическое сравнение</a></li><li><a href="#3-завершение-и-уведомление" class="table-of-contents__link toc-highlight">3. Завершение и уведомление</a></li><li><a href="#пример-обработки-postmessage-перед-редиректом" class="table-of-contents__link toc-highlight">Пример обработки postMessage перед редиректом</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 AbleID</div></div></div></footer></div>
+<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token dom variable" style="color:#36acaa">window</span><span class="token punctuation" style="color:#393A34">.</span><span class="token method function property-access" style="color:#d73a49">addEventListener</span><span class="token punctuation" style="color:#393A34">(</span><span class="token string" style="color:#e3116c">&quot;message&quot;</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"> </span><span class="token keyword" style="color:#00009f">function</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">(</span><span class="token parameter">event</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token keyword control-flow" style="color:#00009f">if</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain">event</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">data</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">type</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">===</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&quot;redirect&quot;</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">&amp;&amp;</span><span class="token plain"> event</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">data</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">url</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    </span><span class="token dom variable" style="color:#36acaa">window</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">location</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">href</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> event</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">data</span><span class="token punctuation" style="color:#393A34">.</span><span class="token property-access">url</span><span class="token punctuation" style="color:#393A34">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  </span><span class="token punctuation" style="color:#393A34">}</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">}</span><span class="token punctuation" style="color:#393A34">)</span><span class="token punctuation" style="color:#393A34">;</span><br></span></code></pre></div></div></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Страница документа"><a class="pagination-nav__link pagination-nav__link--prev" href="/ableid-docs/home"><div class="pagination-nav__sublabel">Предыдущая страница</div><div class="pagination-nav__label">Главная</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/ableid-docs/process"><div class="pagination-nav__sublabel">Следующая страница</div><div class="pagination-nav__label">Детальный процесс прохождения</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#схема-взаимодействия" class="table-of-contents__link toc-highlight">Схема взаимодействия</a></li><li><a href="#идентификация-vs-верификация" class="table-of-contents__link toc-highlight">Идентификация vs Верификация</a><ul><li><a href="#идентификация-identification" class="table-of-contents__link toc-highlight">Идентификация (Identification)</a></li><li><a href="#верификация-verification" class="table-of-contents__link toc-highlight">Верификация (Verification)</a></li><li><a href="#сравнительная-таблица" class="table-of-contents__link toc-highlight">Сравнительная таблица</a></li><li><a href="#рекомендации" class="table-of-contents__link toc-highlight">Рекомендации</a></li></ul></li><li><a href="#1-инициализация-сессии" class="table-of-contents__link toc-highlight">1. Инициализация сессии</a><ul><li><a href="#время-жизни-сессии" class="table-of-contents__link toc-highlight">Время жизни сессии</a></li></ul></li><li><a href="#21-проверка-живости-liveness" class="table-of-contents__link toc-highlight">2.1. Проверка живости (Liveness)</a></li><li><a href="#22-валидация-и-проверка-данных" class="table-of-contents__link toc-highlight">2.2. Валидация и проверка данных</a></li><li><a href="#23-биометрическое-сравнение" class="table-of-contents__link toc-highlight">2.3. Биометрическое сравнение</a></li><li><a href="#3-завершение-и-уведомление" class="table-of-contents__link toc-highlight">3. Завершение и уведомление</a><ul><li><a href="#настройка-redirect-url" class="table-of-contents__link toc-highlight">Настройка Redirect URL</a></li></ul></li><li><a href="#пример-обработки-postmessage-перед-редиректом" class="table-of-contents__link toc-highlight">Пример обработки postMessage перед редиректом</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 AbleID</div></div></div></footer></div>
 </body>
 </html>
