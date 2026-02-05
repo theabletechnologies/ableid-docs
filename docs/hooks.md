@@ -31,6 +31,29 @@ title: Получение данных (Webhooks)
 
 ---
 
+## Настройка Redirect URL
+
+Помимо Webhook URL, для корректной работы системы редиректа после завершения идентификации необходимо настроить статические Redirect URL в конфигурации проекта.
+
+> **ВАЖНО:**
+>
+> 1. **Статические URL:** В конфигурации проекта прописываются **2 статических Redirect URL**:
+>    - URL для перенаправления при успешной идентификации/верификации
+>    - URL для перенаправления при неуспешном прохождении или ошибке
+> 2. **Изменение только через поддержку:** Redirect URL настраиваются **один раз** при создании проекта и изменяются **ТОЛЬКО** по запросу в службу поддержки.
+> 3. **Динамическое изменение недоступно:** В процессе работы через API изменить или переопределить Redirect URL **невозможно**.
+
+### Необходимые Redirect URL
+
+Для настройки или обновления Redirect URL обратитесь к нашей команде поддержки:
+
+| Параметр конфигурации         | Описание                                           | Пример                      |
+|-------------------------------|----------------------------------------------------|-----------------------------|
+| `SUCCESS_REDIRECT_URL`        | URL страницы успешного прохождения                 | https://example.com/success |
+| `ERROR_REDIRECT_URL`          | URL страницы неуспешного прохождения или ошибки    | https://example.com/error   |
+
+---
+
 # Резиденты
 
 В данном разделе описаны хуки для работы с данными резидентов (граждан РУз и лиц с ПИНФЛ).
@@ -261,47 +284,35 @@ title: Получение данных (Webhooks)
       "cadastre": "1234567890",
       "country": "Uzbekistan",
       "countryId": "1",
-      "countryCbuId": "1",
       "region": "Tashkent",
       "regionId": "1",
-      "regionCbuId": "1",
       "district": "Yunusabad",
       "districtId": "1",
-      "districtCbuId": "1",
       "maxala": "Mahalla",
       "maxalaId": "1",
-      "maxalaCbuId": "1",
       "street": "Amir Temur",
-      "streetId": "1",
-      "streetCbuId": "1",
-      "registrationDate": "2020-01-01"
+      "streetId": "1"
     }
   }
 }
 ```
 
-**Описание полей: Структуры данных прописки (permanentRegistration и temporaryRegistrations)**
+**Описание полей: Структуры данных прописки**
 
-| Поле               | Тип              | Описание                      |
-|--------------------|------------------|-------------------------------|
-| `address`          | `string \| null` | Адрес                         |
-| `cadastre`         | `string \| null` | Кадастровый номер             |
-| `country`          | `string \| null` | Страна                        |
-| `countryId`        | `string \| null` | ID страны из справочника МВД  |
-| `countryCbuId`     | `string \| null` | ID страны из справочника ЦБ   |
-| `region`           | `string \| null` | Регион (область)              |
-| `regionId`         | `string \| null` | ID региона из справочника МВД |
-| `regionCbuId`      | `string \| null` | ID региона из справочника ЦБ  |
-| `district`         | `string \| null` | Район                         |
-| `districtId`       | `string \| null` | ID района из справочника МВД  |
-| `districtCbuId`    | `string \| null` | ID района из справочника ЦБ   |
-| `maxala`           | `string \| null` | Махалля                       |
-| `maxalaId`         | `string \| null` | ID махалли из справочника МВД |
-| `maxalaCbuId`      | `string \| null` | ID махалли из справочника ЦБ  |
-| `street`           | `string \| null` | Улица                         |
-| `streetId`         | `string \| null` | ID улицы из справочника МВД   |
-| `streetCbuId`      | `string \| null` | ID улицы из справочника ЦБ    |
-| `registrationDate` | `string \| null` | Дата регистрации              |
+| Поле        | Тип              | Описание                      |
+|-------------|------------------|-------------------------------|
+| `address`   | `string \| null` | Адрес                         |
+| `cadastre`  | `string \| null` | Кадастровый номер             |
+| `country`   | `string \| null` | Страна                        |
+| `countryId` | `string \| null` | ID страны из справочника МВД  |
+| `region`    | `string \| null` | Регион (область)              |
+| `regionId`  | `string \| null` | ID региона из справочника МВД |
+| `district`  | `string \| null` | Район                         |
+| `districtId`| `string \| null` | ID района из справочника МВД  |
+| `maxala`    | `string \| null` | Махалля                       |
+| `maxalaId`  | `string \| null` | ID махалли из справочника МВД |
+| `street`    | `string \| null` | Улица                         |
+| `streetId`  | `string \| null` | ID улицы из справочника МВД   |
 
 ---
 
