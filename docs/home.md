@@ -149,8 +149,7 @@ API предназначено для инициации, обработки и 
   "data": {
     "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-    "transactionId": "your-transaction-id",
-    "data": {}
+    "transactionId": "your-transaction-id"
   }
 }
 ```
