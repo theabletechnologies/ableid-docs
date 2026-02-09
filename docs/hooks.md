@@ -21,12 +21,42 @@ title: Получение данных (Webhooks)
 
 Для работы с хуками необходимо настроить статические URL в конфигурации проекта. Для настройки или обновления URL обратитесь к нашей команде поддержки:
 
-| Метод API                                     | Webhook URL в конфиге      | Описание                                                   |
-|-----------------------------------------------|----------------------------|------------------------------------------------------------|
-| `/check/get_passport`, `/check/get_person`    | `PERSON_WEBHOOK_URL`       | Получение паспортных данных / полной информации + прописка |
-| `/check/registration`                         | `REGISTRATION_WEBHOOK_URL` | Получение только прописки                                  |
-| `/check/get_photo`                            | `PHOTO_WEBHOOK_URL`        | Получение фото (Base64)                                    |
-| `/check/get_foreign_person`                   | `FOREIGN_WEBHOOK_URL`      | Данные пересечения нерезидента                             |
+| Метод API                                  | Webhook URL в конфиге      | Описание                                                   |
+| ------------------------------------------ | -------------------------- | ---------------------------------------------------------- |
+| `/check/get_passport`, `/check/get_person` | `PERSON_WEBHOOK_URL`       | Получение паспортных данных / полной информации + прописка |
+| `/check/registration`                      | `REGISTRATION_WEBHOOK_URL` | Получение только прописки                                  |
+| `/check/get_photo`                         | `PHOTO_WEBHOOK_URL`        | Получение фото (Base64)                                    |
+| `/check/get_foreign_person`                | `FOREIGN_WEBHOOK_URL`      | Данные пересечения нерезидента                             |
+
+---
+
+## Общая структура ответа
+
+Все webhook-ответы имеют единую обёртку с общими полями:
+
+```json
+{
+  "data": {
+    "attemptId": "RFJkzaealP6XF0CspiAoq",
+    "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
+    "lang": "ru",
+    "data": { ... }
+  },
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно"
+}
+```
+
+| Поле         | Тип      | Описание                                 |
+| ------------ | -------- | ---------------------------------------- |
+| `attemptId`  | `string` | ID сессии идентификации                  |
+| `hash`       | `string` | Подпись для верификации данных           |
+| `lang`       | `string` | Язык сессии (`ru`, `uz`, `en`)           |
+| `data`       | `object` | Полезная нагрузка (зависит от типа хука) |
+| `statusCode` | `number` | HTTP-код статуса                         |
+| `type`       | `string` | Тип ответа (`SUCCESS`)                   |
+| `message`    | `string` | Сообщение о результате                   |
 
 ---
 
@@ -47,7 +77,7 @@ title: Получение данных (Webhooks)
 Для настройки или обновления Redirect URL обратитесь к нашей команде поддержки:
 
 | Параметр конфигурации  | Описание                                        | Пример                      |
-|------------------------|-------------------------------------------------|-----------------------------|
+| ---------------------- | ----------------------------------------------- | --------------------------- |
 | `SUCCESS_REDIRECT_URL` | URL страницы успешного прохождения              | https://example.com/success |
 | `ERROR_REDIRECT_URL`   | URL страницы неуспешного прохождения или ошибки | https://example.com/error   |
 
@@ -91,45 +121,43 @@ title: Получение данных (Webhooks)
 
 ```json
 {
-  "statusCode": 200,
-  "type": "SUCCESS",
-  "message": "Успешно",
   "data": {
     "attemptId": "RFJkzaealP6XF0CspiAoq",
     "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "lang": "ru",
     "data": {
-      "attemptId": "RFJkzaealP6XF0CspiAoq",
       "surname": "IVANOV",
       "name": "IVAN",
       "lastName": "IVANOVICH",
       "document": "AB1234567",
       "sex": 1,
-      "passportGivePlace": "IIV",
-      "passportGivePlaceId": 0,
+      "passportGivePlace": "РУВД ГОРОДА ТАШКЕНТА",
+      "passportGivePlaceId": 12345,
       "passportDateBegin": "2020-01-01",
       "passportDateEnd": "2030-01-01",
-      "passportType": "IDMS_RECV_CITIZ_DOCUMENTS"
+      "passportType": "IDMS_RECV_MVD_IDCARD_CITIZEN"
     }
-  }
+  },
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно"
 }
 ```
 
 **Описание полей:**
 
-| Поле                  | Тип данных       | Описание                            |
-| --------------------- | ---------------- | ----------------------------------- |
-| `attemptId`           | `string`         | ID сессии                           |
-| `surname`             | `string`         | Фамилия                             |
-| `name`                | `string`         | Имя                                 |
-| `lastName`            | `string`         | Отчество                            |
-| `document`            | `string`         | Серия и номер паспорта              |
-| `sex`                 | `number`         | Пол                                 |
-| `passportGivePlace`   | `string`         | Кем выдан документ                  |
-| `passportGivePlaceId` | `number`         | Кем выдан документ (из справочника) |
-| `passportDateBegin`   | `string`         | Дата начала действия документа      |
-| `passportDateEnd`     | `string`         | Дата окончания действия документа   |
-| `passportType`        | `string \| null` | Тип документа (см. справочник ниже) |
+| Поле                  | Тип данных       | Описание                                          |
+| --------------------- | ---------------- | ------------------------------------------------- |
+| `surname`             | `string`         | Фамилия                                           |
+| `name`                | `string`         | Имя                                               |
+| `lastName`            | `string`         | Отчество                                          |
+| `document`            | `string`         | Серия и номер паспорта                            |
+| `sex`                 | `number`         | Пол                                               |
+| `passportGivePlace`   | `string`         | Кем выдан документ                                |
+| `passportGivePlaceId` | `number`         | ID организации выдавшей документ (справочник МВД) |
+| `passportDateBegin`   | `string`         | Дата начала действия документа                    |
+| `passportDateEnd`     | `string`         | Дата окончания действия документа                 |
+| `passportType`        | `string \| null` | Тип документа (см. справочник ниже)               |
 
 ---
 
@@ -167,9 +195,6 @@ title: Получение данных (Webhooks)
 
 ```json
 {
-  "statusCode": 200,
-  "type": "SUCCESS",
-  "message": "Успешно",
   "data": {
     "attemptId": "RFJkzaealP6XF0CspiAoq",
     "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
@@ -178,59 +203,59 @@ title: Получение данных (Webhooks)
       "person": {
         "attemptId": "RFJkzaealP6XF0CspiAoq",
         "pinfl": "12345678901234",
+        "document": "AB1234567",
         "surname": "IVANOV",
         "name": "IVAN",
         "lastName": "IVANOVICH",
-        "document": "AB1234567",
-        "sex": 1,
-        "passportGivePlace": "IIV",
-        "passportGivePlaceId": "1",
+        "birthCountry": "УЗБЕКИСТАН",
+        "birthCountryCbuId": "860",
+        "birthCountryId": "182",
+        "birthDate": "2000-01-01",
+        "birthPlace": "TOSHKENT",
+        "birthPlaceId": "11",
+        "birthPlaceCbuId": "27",
+        "citizenship": "УЗБЕКИСТАН",
+        "citizenshipId": "182",
+        "citizenshipCbuId": "860",
+        "liveStatus": true,
+        "nationality": "УЗБЕК/УЗБЕЧКА",
+        "nationalityId": "44",
+        "nationalityCbuId": "01",
         "passportDateBegin": "2020-01-01",
         "passportDateEnd": "2030-01-01",
-        "passportType": "IDMS_RECV_CITIZ_DOCUMENTS",
-        "passportTypeTitle": "Паспорт",
-        "passportTypeId": "1",
-        "passportTypeCbuId": "1",
-        "birthDate": "2000-01-01",
-        "birthPlace": "Tashkent",
-        "birthPlaceId": "1",
-        "birthPlaceCbuId": "1",
-        "birthCountry": "Uzbekistan",
-        "birthCountryId": "1",
-        "birthCountryCbuId": "1",
-        "liveStatus": true,
-        "nationality": "Uzbek",
-        "nationalityId": "1",
-        "nationalityCbuId": "1",
-        "citizenship": "Uzbekistan",
-        "citizenshipId": "1",
-        "citizenshipCbuId": "1"
+        "passportGivePlace": "РУВД ГОРОДА ТАШКЕНТА",
+        "passportGivePlaceId": "12345",
+        "passportType": "IDMS_RECV_MVD_IDCARD_CITIZEN",
+        "passportTypeTitle": "ID КАРТА ГРАЖДАНИНА РЕСПУБЛИКИ УЗБЕКИСТАН",
+        "passportTypeId": "501",
+        "passportTypeCbuId": "0",
+        "sex": 1
       },
       "registration": {
         "permanentRegistration": {
-          "address": "г. Ташкент, ул. Амира Темура, 1",
-          "cadastre": "1234567890",
-          "country": "Uzbekistan",
-          "countryId": "1",
-          "countryCbuId": "1",
-          "region": "Tashkent",
-          "regionId": "1",
-          "regionCbuId": "1",
-          "district": "Yunusabad",
-          "districtId": "1",
-          "districtCbuId": "1",
-          "maxala": "Mahalla",
-          "maxalaId": "1",
-          "maxalaCbuId": "1",
-          "street": "Amir Temur",
-          "streetId": "1",
-          "streetCbuId": "1",
+          "address": "МАХАЛЛЯ МФЙ, МАССИВ,  уй:1 хонадон:1",
+          "cadastre": "10:01:01:01:01:0001:0001:001",
+          "country": "ЎЗБЕКИСТОН",
+          "countryId": "182",
+          "countryCbuId": "860",
+          "region": "ТОШКЕНТ ШАҲРИ",
+          "regionId": "10",
+          "regionCbuId": "26",
+          "district": "ТОШКЕНТ ТУМАНИ",
+          "districtId": "1001",
+          "districtCbuId": "201",
+          "maxala": "МАХАЛЛЯ МФЙ",
+          "maxalaId": "1234",
+          "street": "МАССИВ",
+          "streetId": "5678",
           "registrationDate": "2020-01-01"
-        },
-        "temporaryRegistrations": null
+        }
       }
     }
-  }
+  },
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно"
 }
 ```
 
@@ -238,7 +263,6 @@ title: Получение данных (Webhooks)
 
 | Поле                  | Тип              | Описание                                  |
 | --------------------- | ---------------- | ----------------------------------------- |
-| `attemptId`           | `string`         | ID сессии                                 |
 | `pinfl`               | `string`         | ПИНФЛ                                     |
 | `surname`             | `string`         | Фамилия                                   |
 | `name`                | `string`         | Имя                                       |
@@ -300,28 +324,28 @@ title: Получение данных (Webhooks)
 
 ```json
 {
-  "statusCode": 200,
-  "type": "SUCCESS",
-  "message": "Успешно",
   "data": {
     "attemptId": "RFJkzaealP6XF0CspiAoq",
     "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "lang": "ru",
     "data": {
-      "address": "г. Ташкент, ул. Амира Темура, 1",
-      "cadastre": "1234567890",
-      "country": "Uzbekistan",
-      "countryId": "1",
-      "region": "Tashkent",
-      "regionId": "1",
-      "district": "Yunusabad",
-      "districtId": "1",
-      "maxala": "Mahalla",
-      "maxalaId": "1",
-      "street": "Amir Temur",
-      "streetId": "1"
+      "address": "МАХАЛЛЯ МФЙ, МАССИВ,  уй:1 хонадон:1",
+      "cadastre": "10:01:01:01:01:0001:0001:001",
+      "country": "ЎЗБЕКИСТОН",
+      "countryId": "182",
+      "region": "ТОШКЕНТ ШАҲРИ",
+      "regionId": "10",
+      "district": "ТОШКЕНТ ТУМАНИ",
+      "districtId": "1001",
+      "maxala": "МАХАЛЛЯ МФЙ",
+      "maxalaId": "1234",
+      "street": "МАССИВ",
+      "streetId": "5678"
     }
-  }
+  },
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно"
 }
 ```
 
@@ -372,20 +396,18 @@ title: Получение данных (Webhooks)
 
 ```json
 {
-  "statusCode": 200,
-  "type": "SUCCESS",
-  "message": "Успешно",
   "data": {
     "attemptId": "RFJkzaealP6XF0CspiAoq",
     "hash": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
     "lang": "ru",
     "data": {
-      "crc": "1BF41318DFA700936EC613BB8711DC4C68B23C7F",
-      "attemptId": "RFJkzaealP6XF0CspiAoq",
-      "transactionId": "RFJkzaealP6XF0CspiAoq",
-      "photo": "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo="
+      "crc": "94c07e38",
+      "photo": "/9j/4AAQSk..."
     }
-  }
+  },
+  "statusCode": 200,
+  "type": "SUCCESS",
+  "message": "Успешно"
 }
 ```
 
@@ -393,6 +415,7 @@ title: Получение данных (Webhooks)
 
 | Поле    | Тип данных | Описание                       |
 | ------- | ---------- | ------------------------------ |
+| `crc`   | `string`   | Контрольная сумма              |
 | `photo` | `string`   | Base64 фотография пользователя |
 
 ---
@@ -444,7 +467,10 @@ title: Получение данных (Webhooks)
       "person": {
         "document": "AB12345678",
         "reg_date": "2024-01-01",
+        "direction_type_id": "1",
+        "transport_type_code": "AIR",
         "citizenship": "RUSSIA",
+        "direction_country_id": "643",
         "full_name": "IVANOV IVAN",
         "birth_date": "2000-01-01"
       }
@@ -455,13 +481,16 @@ title: Получение данных (Webhooks)
 
 **Описание полей:**
 
-| Поле          | Тип данных | Описание               |
-| ------------- | ---------- | ---------------------- |
-| `document`    | `string`   | Серия и номер паспорта |
-| `reg_date`    | `string`   | Дата въезда            |
-| `citizenship` | `string`   | Гражданство            |
-| `full_name`   | `string`   | Ф.И.О.                 |
-| `birth_date`  | `string`   | Дата рождения          |
+| Поле                   | Тип              | Описание                      |
+| ---------------------- | ---------------- | ----------------------------- |
+| `document`             | `string`         | Серия и номер паспорта        |
+| `reg_date`             | `string`         | Дата въезда                   |
+| `direction_type_id`    | `string`         | Тип направления (въезд/выезд) |
+| `transport_type_code`  | `string`         | Код типа транспорта           |
+| `citizenship`          | `string`         | Гражданство                   |
+| `direction_country_id` | `string \| null` | ID страны направления         |
+| `full_name`            | `string \| null` | Ф.И.О.                        |
+| `birth_date`           | `string \| null` | Дата рождения                 |
 
 ---
 
