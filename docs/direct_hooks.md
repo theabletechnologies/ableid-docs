@@ -225,7 +225,7 @@ sha1(sha1(projectId + secret).toUpperCase() + attemptId).toUpperCase()
 
 ### Вебхук нерезидента (`FOREIGN_WEBHOOK_URL`)
 
-Структура аналогична [хуку `/check/get_foreign_person`](/hooks#1-получение-пересечения).
+Структура аналогична [хуку `/check/get_foreign_person`](/hooks#6-получение-пересечения).
 
 ```json
 {
@@ -251,7 +251,7 @@ sha1(sha1(projectId + secret).toUpperCase() + attemptId).toUpperCase()
 }
 ```
 
-> Полное описание полей — в разделе [Хуки → Получение пересечения](/hooks#1-получение-пересечения).
+> Полное описание полей — в разделе [Хуки → Получение пересечения](/hooks#6-получение-пересечения).
 
 ---
 
