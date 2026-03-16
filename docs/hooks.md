@@ -97,13 +97,14 @@ title: Получение данных (Webhooks)
 
 **Входные параметры:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример                           |
-|-------------|----------|------------------------|--------------|----------------------------------|
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
-| `birthDate` | `string` | Дата рождения          | Да           | "12.12.2000"                     |
-| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| Поле        | Тип      | Описание                | Обязательное | Пример                           |
+|-------------|----------|-------------------------|--------------|----------------------------------|
+| `pinfl`     | `string` | ПИНФЛ                   | Да           | 12345678901234                   |
+| `birthDate` | `string` | Дата рождения           | Да           | "12.12.2000"                     |
+| `projectId` | `string` | ID проекта              | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии               | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта  | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `lang`      | `string` | Язык (`ru`, `uz`, `oz`) | Нет          | "ru"                             |
 
 ```json
 {
@@ -111,7 +112,8 @@ title: Получение данных (Webhooks)
   "birthDate": "12.12.2000",
   "projectId": "yDkeHoHWXVqQ9M_URZUtb",
   "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "lang": "ru"
 }
 ```
 
@@ -169,13 +171,14 @@ title: Получение данных (Webhooks)
 
 **Входные параметры:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример                           |
-|-------------|----------|------------------------|--------------|----------------------------------|
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
-| `birthDate` | `string` | Дата рождения          | Да           | "12.12.2000"                     |
-| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| Поле        | Тип      | Описание                | Обязательное | Пример                           |
+|-------------|----------|-------------------------|--------------|----------------------------------|
+| `pinfl`     | `string` | ПИНФЛ                   | Да           | 12345678901234                   |
+| `birthDate` | `string` | Дата рождения           | Да           | "12.12.2000"                     |
+| `projectId` | `string` | ID проекта              | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии               | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта  | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `lang`      | `string` | Язык (`ru`, `uz`, `oz`) | Нет          | "ru"                             |
 
 ```json
 {
@@ -183,7 +186,8 @@ title: Получение данных (Webhooks)
   "birthDate": "12.12.2000",
   "projectId": "yDkeHoHWXVqQ9M_URZUtb",
   "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "lang": "ru"
 }
 ```
 
@@ -522,13 +526,15 @@ title: Получение данных (Webhooks)
 | `projectId` | `string` | ID проекта                      | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
 | `attemptId` | `string` | ID сессии                       | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
 | `secret`    | `string` | Секретный ключ проекта          | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `lang`      | `string` | Язык (`ru`, `uz`, `oz`)         | Нет          | "ru"                             |
 
 ```json
 {
   "document": "AB12345678",
   "projectId": "yDkeHoHWXVqQ9M_URZUtb",
   "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "lang": "ru"
 }
 ```
 
