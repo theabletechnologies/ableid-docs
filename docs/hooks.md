@@ -50,15 +50,15 @@ title: Получение данных (Webhooks)
 }
 ```
 
-| Поле         | Тип      | Описание                                            |
-|--------------|----------|-----------------------------------------------------|
-| `attemptId`  | `string` | ID сессии идентификации                             |
-| `hash`       | `string` | Подпись для верификации данных                      |
-| `lang`       | `string` | Язык, на котором вернутся данные (`ru`, `uz`, `oz`) |
-| `data`       | `object` | Полезная нагрузка (зависит от типа хука)            |
-| `statusCode` | `number` | HTTP-код статуса                                    |
-| `type`       | `string` | Тип ответа (`SUCCESS`)                              |
-| `message`    | `string` | Сообщение о результате                              |
+| Поле         | Тип      | Описание                                                          |
+|--------------|----------|-------------------------------------------------------------------|
+| `attemptId`  | `string` | ID сессии идентификации                                           |
+| `hash`       | `string` | Подпись для верификации данных                                    |
+| `lang`       | `string` | Язык, на котором вернутся данные (`ru`, `uz`, `oz`)               |
+| `data`       | `object` | Полезная нагрузка (зависит от типа хука)                          |
+| `statusCode` | `number` | HTTP-код статуса                                                  |
+| `type`       | `string` | Тип ответа (`SUCCESS`)                                            |
+| `message`    | `string` | Сообщение о результате (на языке, указанном в `lang` при запросе) |
 
 ---
 
@@ -117,7 +117,7 @@ title: Получение данных (Webhooks)
 }
 ```
 
-### `Хук получения пасспорта`
+### `Хук получения паспорта`
 
 **Куда приходит:** На статический URL для паспорта.
 
@@ -302,25 +302,27 @@ title: Получение данных (Webhooks)
 
 ## 3. Получение прописки
 
-> **Примечание:** Мультиязычность не поддерживается. Данные всегда возвращаются на узбекском языке.
+> **Примечание:** Данные прописки всегда возвращаются на узбекском языке. Параметр `lang` влияет только на поле `message` в ответе.
 
 **Инициализация:** `[POST] https://{domain}/check/registration`
 
 **Входные параметры:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример                           |
-|-------------|----------|------------------------|--------------|----------------------------------|
-| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
-| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| Поле        | Тип      | Описание                | Обязательное | Пример                           |
+|-------------|----------|-------------------------|--------------|----------------------------------|
+| `attemptId` | `string` | ID сессии               | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `pinfl`     | `string` | ПИНФЛ                   | Да           | 12345678901234                   |
+| `projectId` | `string` | ID проекта              | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `secret`    | `string` | Секретный ключ проекта  | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `lang`      | `string` | Язык (`ru`, `uz`, `oz`) | Нет          | "ru"                             |
 
 ```json
 {
   "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
   "pinfl": "12345678901234",
   "projectId": "yDkeHoHWXVqQ9M_URZUtb",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "lang": "ru"
 }
 ```
 
@@ -378,23 +380,25 @@ title: Получение данных (Webhooks)
 
 ## 4. Получение фотографии
 
-> **Примечание:** Мультиязычность не поддерживается. Возвращает только фотографию.
+> **Примечание:** Возвращает только фотографию. Параметр `lang` влияет только на поле `message` в ответе.
 
 **Инициализация:** `[POST] https://{domain}/check/get_photo`
 
 **Входные параметры:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример                           |
-|-------------|----------|------------------------|--------------|----------------------------------|
-| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| Поле        | Тип      | Описание                | Обязательное | Пример                           |
+|-------------|----------|-------------------------|--------------|----------------------------------|
+| `projectId` | `string` | ID проекта              | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `attemptId` | `string` | ID сессии               | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `secret`    | `string` | Секретный ключ проекта  | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `lang`      | `string` | Язык (`ru`, `uz`, `oz`) | Нет          | "ru"                             |
 
 ```json
 {
   "projectId": "yDkeHoHWXVqQ9M_URZUtb",
   "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "lang": "ru"
 }
 ```
 
@@ -432,25 +436,27 @@ title: Получение данных (Webhooks)
 
 ## 5. Получение данных о работе
 
-> **Примечание:** Мультиязычность не поддерживается. Данные всегда возвращаются на узбекском языке.
+> **Примечание:** Данные о работе всегда возвращаются на узбекском языке. Параметр `lang` влияет только на поле `message` в ответе.
 
 **Инициализация:** `[POST] https://{domain}/check/get_work`
 
 **Входные параметры:**
 
-| Поле        | Тип      | Описание               | Обязательное | Пример                           |
-|-------------|----------|------------------------|--------------|----------------------------------|
-| `attemptId` | `string` | ID сессии              | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
-| `pinfl`     | `string` | ПИНФЛ                  | Да           | 12345678901234                   |
-| `projectId` | `string` | ID проекта             | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
-| `secret`    | `string` | Секретный ключ проекта | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| Поле        | Тип      | Описание                | Обязательное | Пример                           |
+|-------------|----------|-------------------------|--------------|----------------------------------|
+| `attemptId` | `string` | ID сессии               | Да           | "3HQVkBm_zCZqKFbTWVrhf"          |
+| `pinfl`     | `string` | ПИНФЛ                   | Да           | 12345678901234                   |
+| `projectId` | `string` | ID проекта              | Да           | "yDkeHoHWXVqQ9M_URZUtb"          |
+| `secret`    | `string` | Секретный ключ проекта  | Да           | "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5" |
+| `lang`      | `string` | Язык (`ru`, `uz`, `oz`) | Нет          | "ru"                             |
 
 ```json
 {
   "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
   "pinfl": "12345678901234",
   "projectId": "yDkeHoHWXVqQ9M_URZUtb",
-  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5"
+  "secret": "y1iPwmpVmxOe4RFGvUoVHmPmlQ0nY5",
+  "lang": "ru"
 }
 ```
 
