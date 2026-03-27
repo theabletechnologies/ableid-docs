@@ -67,6 +67,8 @@ import AbleIDSDK
 
 **Важно:** Прежде чем использовать SDK, необходимо получить данные сессии (`attemptId` и `baseUrl`) от AbleID backend через ваш сервер. Ваш backend должен вызвать один из методов AbleID API для инициализации сессии идентификации и передать полученные данные в мобильное приложение.
 
+API возвращает `attempt_id` и `full_url`. **Важно:** `full_url` — это полная ссылка для веб-браузера (например, `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`). Для SDK нужен только домен — `baseUrl` (например, `https://ableid-dev-back.theable.tech`).
+
 #### 3. Создание транзакции
 
 Создайте объект Transaction используя данные, полученные от вашего backend сервера:
@@ -74,9 +76,19 @@ import AbleIDSDK
 ```swift
 let transaction: Transaction = .init(
     attemptId: receivedAttemptId,  // Получен от вашего backend
-    baseUrl: receivedBaseUrl       // Получен от вашего backend
+    baseUrl: receivedBaseUrl       // Только домен, например: "https://ableid-dev-back.theable.tech"
 )
 ```
+
+:::caution Не путайте fullUrl и baseUrl
+
+API возвращает `full_url` вида:
+`https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`
+
+Для SDK необходим только домен (**baseUrl**):
+`https://ableid-dev-back.theable.tech`
+
+:::
 
 #### 4. Инициация проверки Liveness
 

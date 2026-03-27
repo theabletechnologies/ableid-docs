@@ -13,7 +13,7 @@ Able ID SDK обеспечивает надежное распознавание
 
 ## Требования
 
-- **minSdk:** 21
+- **minSdk:** 26
 - **compileSdk:** 35  
 - **JavaVersion:** 17
 
@@ -21,7 +21,7 @@ Able ID SDK обеспечивает надежное распознавание
 
 ### Добавление зависимости библиотеки
 
-В файле `build.gradle.kts` модуля app добавьте следующую зависимость, заменив `Tag` на последнюю версию релиза (например, 0.4.9):
+В файле `build.gradle.kts` модуля app добавьте следующую зависимость, заменив `Tag` на последнюю версию релиза (например, `v1.0.4`):
 
 ```kotlin
 dependencies {
@@ -59,12 +59,14 @@ dependencyResolutionManagement {
 Убедитесь, что вы интегрировали Able ID SDK в ваш проект. Затем импортируйте необходимый модуль:
 
 ```kotlin
-import com.example.ableidsdk.external.AbleID
+import com.ableid.sdk.external.AbleID
 ```
 
 ### 2. Получение данных сессии
 
-**Важно:** Прежде чем использовать SDK, необходимо получить данные сессии (`attemptId` и `fullUrl`) от AbleID backend через ваш сервер. Ваш backend должен вызвать один из методов AbleID API для инициализации сессии идентификации и передать полученные данные в мобильное приложение.
+**Важно:** Прежде чем использовать SDK, необходимо получить данные сессии (`attemptId` и `baseUrl`) от AbleID backend через ваш сервер. Ваш backend должен вызвать один из методов AbleID API для инициализации сессии идентификации и передать полученные данные в мобильное приложение.
+
+API возвращает `attempt_id` и `full_url`. **Важно:** `full_url` — это полная ссылка для веб-браузера (например, `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`). Для SDK нужен только домен — `baseUrl` (например, `https://ableid-dev-back.theable.tech`).
 
 ### 3. Создание транзакции
 
@@ -73,9 +75,19 @@ import com.example.ableidsdk.external.AbleID
 ```kotlin
 val transaction: Transaction = Transaction(
     attemptId = receivedAttemptId,  // Получен от вашего backend
-    baseUrl = receivedFullUrl       // Получен от вашего backend
+    baseUrl = receivedBaseUrl       // Только домен, например: "https://ableid-dev-back.theable.tech"
 )
 ```
+
+:::caution Не путайте fullUrl и baseUrl
+
+API возвращает `full_url` вида:
+`https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`
+
+Для SDK необходим только домен (**baseUrl**):
+`https://ableid-dev-back.theable.tech`
+
+:::
 
 ### 4. Инициация проверки Liveness
 
@@ -132,8 +144,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.ableidsdk.external.AbleID
-import com.example.ableidsdk.external.AbleLocale
+import com.ableid.sdk.external.AbleID
+import com.ableid.sdk.external.AbleLocale
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -144,14 +156,14 @@ class MainActivity : AppCompatActivity() {
         
         findViewById<Button>(R.id.startLivenessButton).setOnClickListener {
             // Предполагается, что данные сессии уже получены от вашего backend
-            startLivenessCheck(receivedAttemptId, receivedFullUrl)
+            startLivenessCheck(receivedAttemptId, receivedBaseUrl)
         }
     }
-    
-    private fun startLivenessCheck(attemptId: String, fullUrl: String) {
+
+    private fun startLivenessCheck(attemptId: String, baseUrl: String) {
         val transaction = Transaction(
             attemptId = attemptId,  // Получен от вашего backend
-            baseUrl = fullUrl       // Получен от вашего backend
+            baseUrl = baseUrl       // Только домен, например: "https://ableid-dev-back.theable.tech"
         )
         val locale = AbleLocale.ru
         
@@ -176,9 +188,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Проверка liveness завершена успешно", Toast.LENGTH_SHORT).show()
             // Результат будет автоматически отправлен на ваш webhook URL
             // Вы можете также уведомить ваш backend о завершении процесса
-            Log.d("AbleID", "Attempt ID: ${response.attemptId}")
-            Log.d("AbleID", "Status: ${response.status}")
-            Log.d("AbleID", "Confidence: ${response.confidence}")
+            Log.d("AbleID", "Transaction ID: ${response.transactionId}")
+            Log.d("AbleID", "Estimated Age: ${response.estimatedAge}")
         }
     }
     
@@ -188,9 +199,6 @@ class MainActivity : AppCompatActivity() {
                 is AbleIdLivenessError.UserCancellationError -> "Пользователь отменил проверку"
                 is AbleIdLivenessError.AbleLivenessProcessingError -> "Ошибка обработки liveness"
                 is AbleIdLivenessError.AbleInstructionsLoadError -> "Ошибка загрузки инструкций"
-                is AbleIdLivenessError.AbleInitializationError -> "Ошибка инициализации"
-                is AbleIdLivenessError.AbleCompletionRequestError -> "Ошибка завершения запроса"
-                else -> "Неизвестная ошибка"
             }
             
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
@@ -226,7 +234,7 @@ allprojects {
 
 ### Добавление зависимости библиотеки
 
-В файле `build.gradle.kts` модуля app добавьте следующую зависимость в блок dependencies. Замените `Tag` на последнюю версию релиза (например, 0.4.9):
+В файле `build.gradle.kts` модуля app добавьте следующую зависимость в блок dependencies. Замените `Tag` на последнюю версию релиза (например, v1.0.4):
 
 ```kotlin
 dependencies {
