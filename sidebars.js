@@ -15,6 +15,10 @@ module.exports = {
     },
     {
       type: "doc",
+      id: "common",
+    },
+    {
+      type: "doc",
       id: "ableid",
     },
     {
