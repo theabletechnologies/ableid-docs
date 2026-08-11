@@ -38,7 +38,7 @@ SDK распространяется через Swift Package Manager. В Xcode 
 https://github.com/theabletechnologies/AbleIDSDK
 ```
 
-Добавьте библиотеку `AbleIDSDK` к вашей цели (app target). Необходимые зависимости Regula (`FaceSDK`, `FaceCoreBasic`) разрешаются автоматически — не добавляйте их вручную.
+Добавьте библиотеку `AbleIDSDK` к вашей цели (app target). Все необходимые зависимости разрешаются автоматически — не добавляйте их вручную.
 
 Либо укажите зависимость в вашем `Package.swift`:
 
