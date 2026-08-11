@@ -8,11 +8,10 @@ title: Able ID - iOS(sdk)
 Able ID SDK обеспечивает надежное распознавание лиц и защиту от мошеннических попыток. Использует биометрическую верификацию и предотвращает атаки подмены, включая статические изображения, печатные фотографии, видеоповторы, инъекции и маски, обеспечивая безопасную и надежную идентификацию.
 
 <p align="center">
-<a href="https://cocoapods.org/pods/AbleIDSDK"><img src="https://img.shields.io/github/v/tag/JasurSalimov/AbleIDSDK.svg?color=blue&include_prereleases=&sort=semver"/></a>
+<a href="https://github.com/theabletechnologies/AbleIDSDK/releases"><img src="https://img.shields.io/github/v/tag/theabletechnologies/AbleIDSDK.svg?color=blue&include_prereleases=&sort=semver"/></a>
 <a href="https://swift.org/package-manager/"><img src="https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat"/></a>
-<a href="https://raw.githubusercontent.com/onevcat/AbleIDSDK/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black"/></a>
-<a href="https://cocoapods.org/pods/AbleIDSDK"><img src="https://img.shields.io/cocoapods/v/AbleIDSDK.svg?style=flat"/></a>
-<a href="https://cocoapods.org/pods/AbleIDSDK"><img src="https://img.shields.io/cocoapods/p/AbleIDSDK.svg?style=flat"/></a>
+<a href="https://raw.githubusercontent.com/theabletechnologies/AbleIDSDK/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black"/></a>
+<a href="https://developer.apple.com/ios/"><img src="https://img.shields.io/badge/platform-iOS-lightgrey.svg?style=flat"/></a>
 </p>
 
 ## Возможности
@@ -27,31 +26,48 @@ Able ID SDK обеспечивает надежное распознавание
 ### Требования
 
 - iOS 13.0+
-- Swift 5.0+
+- Swift 5.5+ (Xcode 13 или новее)
 
 ### Установка
 
-#### CocoaPods
-
-```ruby
-source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '13.0'
-use_frameworks!
-
-target 'MyApp' do
-  pod 'AbleIDSDK'
-end
-```
-
 #### Swift Package Manager
 
-Скоро будет доступен
+SDK распространяется через Swift Package Manager. В Xcode выберите **File ▸ Add Package Dependencies…** и введите адрес репозитория:
 
-#### Pre-built Framework
+```
+https://github.com/theabletechnologies/AbleIDSDK
+```
 
-1. Откройте [страницу релизов](https://github.com/theabletechnologies/AbleIDSDK/releases), скачайте последнюю версию AbleIDSDK из раздела assets
-2. Перетащите `AbleIDSDK.xcframework` в ваш проект и добавьте к цели (обычно app target)
-3. Выберите вашу цель, во вкладке "General" найдите секцию "Frameworks, Libraries, and Embedded Content", установите `Embed Without Signing` для AbleIDSDK
+Добавьте библиотеку `AbleIDSDK` к вашей цели (app target). Необходимые зависимости Regula (`FaceSDK`, `FaceCoreBasic`) разрешаются автоматически — не добавляйте их вручную.
+
+Либо укажите зависимость в вашем `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/theabletechnologies/AbleIDSDK.git", from: "1.1.6")
+]
+```
+
+:::note
+
+При первом разрешении пакета Xcode может пометить бинарный фреймворк как неподписанную зависимость (unsigned dependency) — подтвердите, чтобы продолжить.
+
+:::
+
+:::caution Переход с CocoaPods
+
+Установка через CocoaPods больше не поддерживается. Если вы использовали `pod 'AbleIDSDK'`, удалите его из Podfile и подключите SDK через Swift Package Manager.
+
+:::
+
+#### Разрешение на использование камеры
+
+SDK требует доступ к камере. Добавьте следующий ключ в `Info.plist` вашего приложения:
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string>Доступ к камере необходим для проверки liveness.</string>
+```
 
 ### Быстрый старт
 
@@ -117,6 +133,16 @@ AbleID.service.startLiveness(from: self, transaction: transaction, locale: .russ
 public typealias LivenessResult = Result<AbleIDSDK.AbleIdLivenessResponse, AbleIDSDK.AbleIdLivenessError>
 ```
 
+При успешном завершении возвращается **AbleIdLivenessResponse** со следующими полями:
+
+| Поле            | Тип        | Описание                                        |
+|-----------------|------------|-------------------------------------------------|
+| `transactionId` | `String?`  | Идентификатор транзакции, присвоенный сервером  |
+| `estimatedAge`  | `NSNumber?`| Предполагаемый возраст пользователя             |
+| `status`        | `UInt?`    | Код статуса от liveness-движка                  |
+| `tag`           | `String?`  | Опциональный тег от backend                     |
+| `error`         | `NSError?` | Низкоуровневая ошибка движка, если возникла     |
+
 ### Локализация
 
 Able ID SDK поддерживает несколько языков. Вы можете указать желаемый язык, используя enum **AbleLocale**:
@@ -124,7 +150,7 @@ Able ID SDK поддерживает несколько языков. Вы мо�
 - **.russian** - Русский язык
 - **.english** - Английский язык  
 - **.uzbek** - Узбекский язык
-- **.preferred** - Использует предпочитаемый язык устройства
+- **.preferred** - Использует предпочитаемый язык устройства (значение по умолчанию)
 
 ```swift
 AbleID.service.startLiveness(
@@ -133,6 +159,28 @@ AbleID.service.startLiveness(
     locale: AbleLocale
 )
 ```
+
+### Настройка внешнего вида
+
+SDK позволяет настроить цвета экранов под стиль вашего приложения. Создайте объект **AbleIdConfiguration** и передайте его в метод **configure** до запуска проверки liveness:
+
+```swift
+let configuration = AbleIdConfiguration(
+    screenBackgroundColor: .white,
+    buttonBackgroundColor: .black,
+    buttonTitleColor: .white,
+    livenessSectorTargetColor: .green
+)
+
+AbleID.service.configure(with: configuration)
+```
+
+| Параметр                    | Описание                                              |
+|-----------------------------|-------------------------------------------------------|
+| `screenBackgroundColor`     | Фон всех экранов SDK                                  |
+| `buttonBackgroundColor`     | Цвет заливки основных кнопок                          |
+| `buttonTitleColor`          | Цвет текста основных кнопок                           |
+| `livenessSectorTargetColor` | Цвет целевого сектора во время проверки liveness      |
 
 ### Обработка ошибок
 
