@@ -272,36 +272,36 @@ title: Получение данных (Webhooks)
 
 **Описание полей: Структуры данных пользователя**
 
-| Поле                  | Тип              | Описание                                  |
-|-----------------------|------------------|-------------------------------------------|
-| `pinfl`               | `string`         | ПИНФЛ                                     |
-| `surname`             | `string`         | Фамилия                                   |
-| `name`                | `string`         | Имя                                       |
-| `lastName`            | `string`         | Отчество                                  |
-| `document`            | `string`         | Серия и номер паспорта                    |
-| `sex`                 | `number`         | Пол (числовое значение)                   |
-| `passportGivePlace`   | `string`         | Кем выдан документ                        |
-| `passportGivePlaceId` | `string`         | ID кем выдан документ (справочник МВД)    |
-| `passportDateBegin`   | `string`         | Дата начала действия документа            |
-| `passportDateEnd`     | `string`         | Дата окончания действия документа         |
-| `passportType`        | `string \| null` | Тип паспорта                              |
-| `passportTypeTitle`   | `string \| null` | Тип паспорта (заголовок)                  |
-| `passportTypeId`      | `string \| null` | ID типа паспорта (справочник МВД)         |
-| `passportTypeCbuId`   | `string \| null` | ID типа паспорта (справочник ЦБ)          |
-| `birthDate`           | `string`         | Дата рождения (формат `YYYY-MM-DD`)       |
-| `birthPlace`          | `string \| null` | Место рождения                            |
-| `birthPlaceId`        | `string \| null` | ID места рождения (справочник МВД)        |
-| `birthPlaceCbuId`     | `string \| null` | ID места рождения (справочник ЦБ)         |
-| `birthCountry`        | `string \| null` | Страна рождения                           |
-| `birthCountryId`      | `string \| null` | ID страны рождения (справочник МВД)       |
-| `birthCountryCbuId`   | `string \| null` | ID страны рождения (справочник ЦБ)        |
-| `liveStatus`          | `boolean`        | Признак, жив ли человек на текущий момент |
-| `nationality`         | `string \| null` | Национальность                            |
-| `nationalityId`       | `string \| null` | ID национальности (справочник МВД)        |
-| `nationalityCbuId`    | `string \| null` | ID национальности (справочник ЦБ)         |
-| `citizenship`         | `string \| null` | Гражданство                               |
-| `citizenshipId`       | `string \| null` | ID гражданства (справочник МВД)           |
-| `citizenshipCbuId`    | `string \| null` | ID гражданства (справочник ЦБ)            |
+| Поле                  | Тип              | Описание                                                       |
+|-----------------------|------------------|----------------------------------------------------------------|
+| `pinfl`               | `string`         | ПИНФЛ                                                          |
+| `surname`             | `string`         | Фамилия                                                        |
+| `name`                | `string`         | Имя                                                            |
+| `lastName`            | `string`         | Отчество                                                       |
+| `document`            | `string`         | Серия и номер паспорта                                         |
+| `sex`                 | `number`         | Пол (числовое значение)                                        |
+| `passportGivePlace`   | `string`         | Кем выдан документ                                             |
+| `passportGivePlaceId` | `string`         | ID кем выдан документ (справочник МВД)                         |
+| `passportDateBegin`   | `string`         | Дата начала действия документа                                 |
+| `passportDateEnd`     | `string`         | Дата окончания действия документа                              |
+| `passportType`        | `string \| null` | Тип паспорта                                                   |
+| `passportTypeTitle`   | `string \| null` | Тип паспорта (заголовок)                                       |
+| `passportTypeId`      | `string \| null` | ID типа паспорта (справочник МВД)                              |
+| `passportTypeCbuId`   | `string \| null` | ID типа паспорта (справочник ЦБ)                               |
+| `birthDate`           | `string`         | Дата рождения (формат `YYYY-MM-DD`)                            |
+| `birthPlace`          | `string \| null` | Место рождения                                                 |
+| `birthPlaceId`        | `string \| null` | ID места рождения (справочник МВД)                             |
+| `birthPlaceCbuId`     | `string \| null` | ID места рождения (справочник ЦБ)                              |
+| `birthCountry`        | `string \| null` | Страна рождения                                                |
+| `birthCountryId`      | `string \| null` | ID страны рождения (см. [Справочник стран](#справочник-стран)) |
+| `birthCountryCbuId`   | `string \| null` | ID страны рождения (справочник ЦБ)                             |
+| `liveStatus`          | `boolean`        | Признак, жив ли человек на текущий момент                      |
+| `nationality`         | `string \| null` | Национальность                                                 |
+| `nationalityId`       | `string \| null` | ID национальности (справочник МВД)                             |
+| `nationalityCbuId`    | `string \| null` | ID национальности (справочник ЦБ)                              |
+| `citizenship`         | `string \| null` | Гражданство                                                    |
+| `citizenshipId`       | `string \| null` | ID гражданства (см. [Справочник стран](#справочник-стран))     |
+| `citizenshipCbuId`    | `string \| null` | ID гражданства (справочник ЦБ)                                 |
 
 ---
 
@@ -366,20 +366,20 @@ title: Получение данных (Webhooks)
 
 **Описание полей: Структуры данных прописки**
 
-| Поле         | Тип              | Описание                      |
-|--------------|------------------|-------------------------------|
-| `address`    | `string \| null` | Адрес                         |
-| `cadastre`   | `string \| null` | Кадастровый номер             |
-| `country`    | `string \| null` | Страна                        |
-| `countryId`  | `string \| null` | ID страны из справочника МВД  |
-| `region`     | `string \| null` | Регион (область)              |
-| `regionId`   | `string \| null` | ID региона из справочника МВД |
-| `district`   | `string \| null` | Район                         |
-| `districtId` | `string \| null` | ID района из справочника МВД  |
-| `maxala`     | `string \| null` | Махалля                       |
-| `maxalaId`   | `string \| null` | ID махалли из справочника МВД |
-| `street`     | `string \| null` | Улица                         |
-| `streetId`   | `string \| null` | ID улицы из справочника МВД   |
+| Поле         | Тип              | Описание                                              |
+|--------------|------------------|-------------------------------------------------------|
+| `address`    | `string \| null` | Адрес                                                 |
+| `cadastre`   | `string \| null` | Кадастровый номер                                     |
+| `country`    | `string \| null` | Страна                                                |
+| `countryId`  | `string \| null` | ID страны (см. [Справочник стран](#справочник-стран)) |
+| `region`     | `string \| null` | Регион (область)                                      |
+| `regionId`   | `string \| null` | ID региона из справочника МВД                         |
+| `district`   | `string \| null` | Район                                                 |
+| `districtId` | `string \| null` | ID района из справочника МВД                          |
+| `maxala`     | `string \| null` | Махалля                                               |
+| `maxalaId`   | `string \| null` | ID махалли из справочника МВД                         |
+| `street`     | `string \| null` | Улица                                                 |
+| `streetId`   | `string \| null` | ID улицы из справочника МВД                           |
 
 ---
 
@@ -605,7 +605,7 @@ title: Получение данных (Webhooks)
 | `direction_type_id`    | `string`         | Тип направления (въезд)                                                               |
 | `transport_type_code`  | `string`         | Код типа транспорта (см. [Справочник видов транспорта](#справочник-видов-транспорта)) |
 | `citizenship`          | `string`         | Гражданство                                                                           |
-| `direction_country_id` | `string \| null` | ID страны направления                                                                 |
+| `direction_country_id` | `string \| null` | ID страны направления (см. [Справочник стран](#справочник-стран))                     |
 | `full_name`            | `string \| null` | Ф.И.О.                                                                                |
 | `birth_date`           | `string \| null` | Дата рождения                                                                         |
 
@@ -636,3 +636,17 @@ title: Получение данных (Webhooks)
 | `004` | Речной транспорт                |
 | `005` | Морской транспорт               |
 | `006` | Гужевой транспорт и пешеходы    |
+
+### Справочник стран
+
+Полный список (249 стран) — [countries.xlsx](/countries.xlsx)
+
+| Колонка  | Наименование                |
+|----------|-----------------------------|
+| `ID`     | ID страны в справочнике МВД |
+| `NAME00` | Узбекский, кириллица        |
+| `NAME01` | Русский                     |
+| `NAME02` | Каракалпакский, кириллица   |
+| `NAME03` | Английский                  |
+| `NAME04` | Узбекский, латиница         |
+| `NAME05` | Каракалпакский, латиница    |
