@@ -95,7 +95,7 @@ Webhook отправляется при провале временной рег
 {
   "statusCode": 10203,
   "type": "FACE_NOT_VALID",
-  "message": "Лицо не прошло проверку",
+  "message": "Пользователь не прошел проверку",
   "data": {
     "redirect": "https://example.com/error",
     "attemptId": "3HQVkBm_zCZqKFbTWVrhf",
