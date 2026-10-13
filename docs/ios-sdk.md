@@ -16,7 +16,9 @@ Able ID SDK обеспечивает надежное распознавание
 
 ## Возможности
 
-- [x] Распознавание лиц с технологией Active Liveness Detection
+- [x] Распознавание лиц с технологией Liveness Detection в активном и пассивном режимах
+
+Режим проверки определяется для каждой сессии на стороне AbleID — в приложении ничего настраивать не нужно.
 
 ## iOS SDK
 
@@ -25,8 +27,14 @@ Able ID SDK обеспечивает надежное распознавание
 
 ### Требования
 
-- iOS 13.0+
-- Swift 5.5+ (Xcode 13 или новее)
+- iOS 17.0+
+- Swift 5.9+ (Xcode 26 или новее)
+
+:::caution Обновление до 1.2.0
+
+С версии 1.2.0 минимальная версия iOS — 17.0 (ранее — 13.0). Если минимальная версия iOS вашего приложения ниже 17.0, после обновления пакета проект перестанет собираться: поднимите ее или оставайтесь на версиях 1.1.x, указав правило `.upToNextMinor(from: "1.1.6")` (в Xcode — **Up to Next Minor Version**).
+
+:::
 
 ### Установка
 
@@ -44,7 +52,7 @@ https://github.com/theabletechnologies/AbleIDSDK
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/theabletechnologies/AbleIDSDK.git", from: "1.1.6")
+    .package(url: "https://github.com/theabletechnologies/AbleIDSDK.git", from: "1.2.0")
 ]
 ```
 
@@ -83,7 +91,7 @@ import AbleIDSDK
 
 **Важно:** Прежде чем использовать SDK, необходимо получить данные сессии (`attemptId` и `baseUrl`) от AbleID backend через ваш сервер. Ваш backend должен вызвать один из методов AbleID API для инициализации сессии идентификации и передать полученные данные в мобильное приложение.
 
-API возвращает `attempt_id` и `full_url`. **Важно:** `full_url` — это полная ссылка для веб-браузера (например, `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`). Для SDK нужен только домен — `baseUrl` (например, `https://ableid-dev-back.theable.tech`).
+API возвращает `attemptId` и `fullUrl`. **Важно:** `fullUrl` — это полная ссылка для веб-браузера (например, `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`). Для SDK нужен только домен — `baseUrl` (например, `https://ableid-dev-back.theable.tech`). `attemptId` передавайте в SDK без изменений.
 
 #### 3. Создание транзакции
 
@@ -98,10 +106,10 @@ let transaction: Transaction = .init(
 
 :::caution Не путайте fullUrl и baseUrl
 
-API возвращает `full_url` вида:
+API возвращает `fullUrl` вида:
 `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`
 
-Для SDK необходим только домен (**baseUrl**):
+Для SDK необходим только домен (**baseUrl**) — без пути и завершающего `/`:
 `https://ableid-dev-back.theable.tech`
 
 :::
@@ -125,9 +133,17 @@ AbleID.service.startLiveness(from: self, transaction: transaction, locale: .russ
 }
 ```
 
+SDK открывает свои экраны модально на весь экран и закрывает их сам. На iPhone они отображаются в портретной ориентации (если приложение ее поддерживает), на iPad и iPhone Duo поворачиваются вместе с устройством.
+
+:::caution Показ алертов и экранов из completion
+
+`completion` вызывается до того, как SDK закроет свой экран. Если вызвать `present(_:animated:)` прямо в `completion`, UIKit не покажет алерт или экран. Показывайте их асинхронно — через `DispatchQueue.main.async`, как в [примере полной интеграции](#пример-полной-интеграции).
+
+:::
+
 #### 5. Обработка результата
 
-Метод **startLiveness** выполняется асинхронно, возвращая **LivenessResult**, который указывает, была ли проверка liveness успешной или неудачной:
+Метод **startLiveness** выполняется асинхронно и передает в `completion` значение **LivenessResult**, которое указывает, была ли проверка liveness успешной или неудачной:
 
 ```swift
 public typealias LivenessResult = Result<AbleIDSDK.AbleIdLivenessResponse, AbleIDSDK.AbleIdLivenessError>
@@ -135,13 +151,15 @@ public typealias LivenessResult = Result<AbleIDSDK.AbleIdLivenessResponse, AbleI
 
 При успешном завершении возвращается **AbleIdLivenessResponse** со следующими полями:
 
-| Поле            | Тип        | Описание                                        |
-|-----------------|------------|-------------------------------------------------|
-| `transactionId` | `String?`  | Идентификатор транзакции, присвоенный сервером  |
-| `estimatedAge`  | `NSNumber?`| Предполагаемый возраст пользователя             |
-| `status`        | `UInt?`    | Код статуса от liveness-движка                  |
-| `tag`           | `String?`  | Опциональный тег от backend                     |
-| `error`         | `NSError?` | Низкоуровневая ошибка движка, если возникла     |
+| Поле            | Тип         | Описание                                                       |
+|-----------------|-------------|----------------------------------------------------------------|
+| `transactionId` | `String?`   | Идентификатор транзакции, присвоенный сервером                 |
+| `estimatedAge`  | `NSNumber?` | Предполагаемый возраст пользователя                            |
+| `status`        | `UInt?`     | Статус проверки: `0` — пройдена, `1` — результат не определен  |
+| `tag`           | `String?`   | Опциональный тег от backend                                    |
+| `error`         | `NSError?`  | Ошибка движка; при успешном результате всегда `nil`            |
+
+Успешный результат означает, что проверка liveness завершена и сессия передана в AbleID. Итоговый результат идентификации или верификации AbleID отправляет на ваш backend через [webhook](ableid.md#webhook-уведомления) — ориентируйтесь на него.
 
 ### Локализация
 
@@ -150,14 +168,20 @@ Able ID SDK поддерживает несколько языков. Вы мо�
 - **.russian** - Русский язык
 - **.english** - Английский язык  
 - **.uzbek** - Узбекский язык
-- **.preferred** - Использует предпочитаемый язык устройства (значение по умолчанию)
+- **.preferred** - Язык устройства: узбекский или русский, если выбран один из них, иначе английский (значение по умолчанию)
+
+Язык передается в параметре `locale`. Если его не указать, используется `.preferred`:
 
 ```swift
-AbleID.service.startLiveness(
-    from: UIViewController, 
-    transaction: Transaction, 
-    locale: AbleLocale
-)
+// Язык задан явно
+AbleID.service.startLiveness(from: self, transaction: transaction, locale: .uzbek) { result in
+    // ...
+}
+
+// Язык устройства (.preferred)
+AbleID.service.startLiveness(from: self, transaction: transaction) { result in
+    // ...
+}
 ```
 
 ### Настройка внешнего вида
@@ -175,22 +199,28 @@ let configuration = AbleIdConfiguration(
 AbleID.service.configure(with: configuration)
 ```
 
-| Параметр                    | Описание                                              |
-|-----------------------------|-------------------------------------------------------|
-| `screenBackgroundColor`     | Фон всех экранов SDK                                  |
-| `buttonBackgroundColor`     | Цвет заливки основных кнопок                          |
-| `buttonTitleColor`          | Цвет текста основных кнопок                           |
-| `livenessSectorTargetColor` | Цвет целевого сектора во время проверки liveness      |
+Вызов необязателен — без него используются стандартные цвета SDK. Настройки применяются ко всем последующим проверкам до перезапуска приложения.
+
+| Параметр                    | Описание                                                           |
+|-----------------------------|--------------------------------------------------------------------|
+| `screenBackgroundColor`     | Фон всех экранов SDK                                               |
+| `buttonBackgroundColor`     | Цвет заливки основных кнопок                                       |
+| `buttonTitleColor`          | Цвет текста основных кнопок                                        |
+| `livenessSectorTargetColor` | Цвет рамки и секторов на экране камеры во время проверки liveness  |
 
 ### Обработка ошибок
 
 Able ID SDK предоставляет перечисление ошибок **AbleIdLivenessError**, которое включает пять различных случаев:
 
-- **userCancellationError** - Пользователь отменил процесс liveness
-- **ableLivenessProcessingError** - Не удалось запустить Able Liveness
-- **ableInstructionsLoadError** - Не удалось загрузить инструкции
+- **userCancellationError** - Пользователь закрыл экран SDK, не начав проверку
+- **ableLivenessProcessingError** - Проверка liveness не пройдена или прервана: например, нет доступа к камере, ошибка сети или сервера, истекло время ожидания, приложение ушло в фон
+- **ableInstructionsLoadError** - Не удалось загрузить видеоинструкции
 - **ableInitializationError** - Не удалось инициализировать Able Liveness
-- **ableCompletionRequestError** - Не удалось завершить запрос
+- **ableCompletionRequestError** - Не удалось сообщить серверу AbleID о завершении сессии
+
+При `ableInstructionsLoadError` и `ableInitializationError` SDK сам показывает пользователю сообщение об ошибке и вызывает `completion` после того, как пользователь его закроет.
+
+Краткое описание ошибки на английском языке доступно в свойстве `errorDescription` (например, для логов). Набор ошибок может расширяться в новых версиях SDK, поэтому добавляйте в `switch` ветку `@unknown default` — в режиме Swift 6 без нее код не скомпилируется.
 
 ### Пример полной интеграции
 
@@ -220,6 +250,8 @@ class ViewController: UIViewController {
             transaction: transaction,
             locale: .russian
         ) { [weak self] result in
+            // completion вызывается до закрытия экрана SDK,
+            // поэтому алерты и экраны показываем асинхронно
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
@@ -254,6 +286,8 @@ class ViewController: UIViewController {
             message = "Ошибка инициализации"
         case .ableCompletionRequestError:
             message = "Ошибка завершения запроса"
+        @unknown default:
+            message = "Неизвестная ошибка"
         }
         
         // Показать пользователю сообщение об ошибке
