@@ -9,34 +9,52 @@ Able ID SDK обеспечивает надежное распознавание
 
 ## Возможности
 
-- [x] Распознавание лиц с технологией Active Liveness Detection
+- [x] Распознавание лиц с технологией Liveness Detection в активном и пассивном режимах
+
+Режим проверки определяется для каждой сессии на стороне AbleID — в приложении ничего настраивать не нужно.
 
 ## Требования
 
-- **minSdk:** 26
-- **compileSdk:** 35  
+- **minSdk:** 21
+- **compileSdk:** 35 или выше
 - **JavaVersion:** 17
+- **Kotlin:** 2.1 или новее — если приложение написано на Kotlin (в том числе Android-часть Flutter-проекта)
+- **Тема приложения:** наследуется от `Theme.AppCompat` (подходят также `Theme.MaterialComponents` и `Theme.Material3`)
+
+:::caution Тема приложения
+
+Экраны SDK используют тему, заданную у элемента `<application>` в `AndroidManifest.xml`. Если она не наследуется от `Theme.AppCompat` (например, `android:Theme.Material.Light.NoActionBar` из шаблона Jetpack Compose), при запуске проверки приложение завершится с ошибкой `IllegalStateException: You need to use a Theme.AppCompat theme`. Укажите у `<application>` тему на основе AppCompat — для своих Activity прежнюю тему можно сохранить, задав ее в атрибуте `android:theme` каждой Activity.
+
+:::
+
+:::note Обновление до 1.2.0
+
+Версия 1.2.0 не меняет API и требования по сравнению с 1.1.6 — достаточно обновить номер версии. В ней обновлен движок проверки liveness: улучшена защита от атак подмены, активная проверка работает стабильнее, а подсказки на экране камеры больше не отображаются без перевода. Если вы обновляетесь с версии ниже 1.1.6, учтите, что начиная с 1.1.6 для приложений на Kotlin нужен Kotlin 2.1 или новее.
+
+:::
 
 ## Установка
 
 ### Добавление зависимости библиотеки
 
-В файле `build.gradle.kts` модуля app добавьте следующую зависимость, заменив `Tag` на последнюю версию релиза (например, `v1.0.4`):
+В файле `build.gradle.kts` модуля app добавьте зависимость SDK (последняя версия — `v1.2.0`):
 
 ```kotlin
 dependencies {
-    implementation("com.github.theabletechnologies:AbleIDSDK-Jitpack:Tag")
+    implementation("com.github.theabletechnologies:AbleIDSDK-Jitpack:v1.2.0")
 }
 ```
 
 ### Настройка dependencyResolutionManagement в settings.gradle.kts
 
-В секции `dependencyResolutionManagement` файла `settings.gradle.kts` добавьте необходимые Maven репозитории. **Примечание:** Убедитесь, что включили учетные данные для доступа к приватным репозиториям, используемым библиотекой. Учетные данные будут предоставлены отдельно:
+В секции `dependencyResolutionManagement` файла `settings.gradle.kts` добавьте необходимые Maven репозитории, сохранив существующие `google()` и `mavenCentral()`. **Примечание:** Убедитесь, что включили учетные данные для доступа к приватным репозиториям, используемым библиотекой. Учетные данные будут предоставлены отдельно:
 
 ```kotlin
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        google()
+        mavenCentral()
         maven {
             url = uri("https://jitpack.io")
             credentials {
@@ -52,21 +70,30 @@ dependencyResolutionManagement {
 
 **Важно:** Замените `YOUR_JITPACK_USERNAME` на учетные данные, которые будут предоставлены вам командой AbleID.
 
+### Разрешения
+
+Добавлять разрешения в `AndroidManifest.xml` не нужно: SDK объявляет `CAMERA`, `INTERNET`, `VIBRATE` и `FLASHLIGHT` в своем манифесте, и при сборке они автоматически попадают в ваше приложение. Доступ к камере SDK запрашивает у пользователя сам перед началом проверки.
+
 ## Быстрый старт
 
 ### 1. Импорт SDK
 
-Убедитесь, что вы интегрировали Able ID SDK в ваш проект. Затем импортируйте необходимый модуль:
+Убедитесь, что вы интегрировали Able ID SDK в ваш проект. Затем импортируйте необходимые классы:
 
 ```kotlin
 import com.ableid.sdk.external.AbleID
+import com.ableid.sdk.external.AbleIdLivenessError
+import com.ableid.sdk.external.AbleIdLivenessResponse
+import com.ableid.sdk.external.AbleLocale
+import com.ableid.sdk.external.LivenessResult
+import com.ableid.sdk.external.Transaction
 ```
 
 ### 2. Получение данных сессии
 
 **Важно:** Прежде чем использовать SDK, необходимо получить данные сессии (`attemptId` и `baseUrl`) от AbleID backend через ваш сервер. Ваш backend должен вызвать один из методов AbleID API для инициализации сессии идентификации и передать полученные данные в мобильное приложение.
 
-API возвращает `attempt_id` и `full_url`. **Важно:** `full_url` — это полная ссылка для веб-браузера (например, `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`). Для SDK нужен только домен — `baseUrl` (например, `https://ableid-dev-back.theable.tech`).
+API возвращает `attemptId` и `fullUrl`. **Важно:** `fullUrl` — это полная ссылка для веб-браузера (например, `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`). Для SDK нужен только домен — `baseUrl` (например, `https://ableid-dev-back.theable.tech`). `attemptId` передавайте в SDK без изменений.
 
 ### 3. Создание транзакции
 
@@ -81,20 +108,20 @@ val transaction: Transaction = Transaction(
 
 :::caution Не путайте fullUrl и baseUrl
 
-API возвращает `full_url` вида:
+API возвращает `fullUrl` вида:
 `https://ableid-dev-back.theable.tech/public/zChFkO2AQ6Ab_IOF5uR5Z?lang=ru`
 
-Для SDK необходим только домен (**baseUrl**):
+Для SDK необходим только домен (**baseUrl**) — без пути и завершающего `/`:
 `https://ableid-dev-back.theable.tech`
 
 :::
 
 ### 4. Инициация проверки Liveness
 
-Вызовите метод **startLiveness** объекта **AbleID.service**, передав текущий **Activity(context)**, объект **Transaction** и **locale**:
+Вызовите метод **startLiveness** объекта **AbleID.service()**, передав текущую **Activity**, объект **Transaction** и желаемую **locale**:
 
 ```kotlin
-AbleID.service().startLiveness(this, transaction, locale) { result ->
+AbleID.service().startLiveness(this, transaction, AbleLocale.ru) { result ->
     when (result) {
         is LivenessResult.Success -> {
             val response = result.response
@@ -112,9 +139,17 @@ AbleID.service().startLiveness(this, transaction, locale) { result ->
 }
 ```
 
+SDK открывает свои экраны поверх вашего приложения и закрывает их сам.
+
+:::caution Обработка результата в колбэке
+
+Колбэк вызывается в главном потоке до того, как SDK закроет свой экран, — в этот момент ваша Activity остановлена. Транзакции фрагментов и навигация (например, `navigate()`) прямо в колбэке завершатся ошибкой `IllegalStateException` или будут проигнорированы. Сохраните результат (например, во `ViewModel`) и обработайте его, когда Activity снова станет активной. Логирование и `Toast` можно вызывать сразу.
+
+:::
+
 ### 5. Обработка результата
 
-Метод **startLiveness** выполняется асинхронно, возвращая **LivenessResult**, который указывает, была ли проверка liveness успешной или неудачной:
+Метод **startLiveness** выполняется асинхронно и передает в колбэк значение **LivenessResult**, которое указывает, была ли проверка liveness успешной или неудачной:
 
 ```kotlin
 public sealed class LivenessResult {
@@ -123,9 +158,19 @@ public sealed class LivenessResult {
 }
 ```
 
+При успешном завершении возвращается **AbleIdLivenessResponse** со следующими полями:
+
+| Поле            | Тип       | Описание                                                                  |
+|-----------------|-----------|---------------------------------------------------------------------------|
+| `transactionId` | `String?` | Идентификатор транзакции, присвоенный сервером                            |
+| `estimatedAge`  | `Number?` | Предполагаемый возраст пользователя                                       |
+| `tag`           | `String?` | Уникальный идентификатор (UUID), который SDK присваивает каждой проверке |
+
+Успешный результат означает, что проверка liveness пройдена и сессия передана в AbleID. Итоговый результат идентификации или верификации AbleID отправляет на ваш backend через [webhook](ableid.md#webhook-уведомления) — ориентируйтесь на него.
+
 ## Локализация
 
-Able ID SDK поддерживает несколько языков через параметр `locale` в методе `startLiveness`. Вы можете явно указать язык интерфейса или использовать автоматическое определение на основе системных настроек.
+Able ID SDK поддерживает несколько языков. Язык экранов SDK задается обязательным параметром `locale` метода `startLiveness` — язык устройства автоматически не определяется.
 
 ### Поддерживаемые языки
 
@@ -135,18 +180,38 @@ SDK поддерживает следующие языки через enum `Able
 - **AbleLocale.ru** - Русский язык  
 - **AbleLocale.uz** - Узбекский язык
 
+```kotlin
+AbleID.service().startLiveness(this, transaction, AbleLocale.uz) { result ->
+    // ...
+}
+```
+
+## Обработка ошибок
+
+Able ID SDK предоставляет sealed-класс ошибок **AbleIdLivenessError**, который включает три случая:
+
+- **UserCancellationError** - Пользователь закрыл экран SDK (кнопкой закрытия или кнопкой «Назад»), не начав проверку
+- **AbleLivenessProcessingError** - Проверка liveness не пройдена или прервана: например, исчерпаны попытки, нет доступа к камере, ошибка сети или сервера, не удалось сообщить серверу AbleID о завершении сессии
+- **AbleInstructionsLoadError** - Не удалось загрузить видеоинструкции или инициализировать модуль проверки liveness
+
+При `AbleInstructionsLoadError` SDK сам показывает пользователю сообщение об ошибке и вызывает колбэк после того, как пользователь его закроет.
+
+Краткое описание ошибки на английском языке доступно в свойстве `message` (например, для логов).
+
 ## Пример полной интеграции
 
 ```kotlin
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ableid.sdk.external.AbleID
+import com.ableid.sdk.external.AbleIdLivenessError
+import com.ableid.sdk.external.AbleIdLivenessResponse
 import com.ableid.sdk.external.AbleLocale
-import java.util.*
+import com.ableid.sdk.external.LivenessResult
+import com.ableid.sdk.external.Transaction
 
 class MainActivity : AppCompatActivity() {
     
@@ -167,6 +232,8 @@ class MainActivity : AppCompatActivity() {
         )
         val locale = AbleLocale.ru
         
+        // Колбэк вызывается в главном потоке до закрытия экрана SDK,
+        // поэтому здесь только логируем и показываем Toast
         AbleID.service().startLiveness(this, transaction, locale) { result ->
             when (result) {
                 is LivenessResult.Success -> {
@@ -184,26 +251,22 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun handleSuccess(response: AbleIdLivenessResponse) {
-        runOnUiThread {
-            Toast.makeText(this, "Проверка liveness завершена успешно", Toast.LENGTH_SHORT).show()
-            // Результат будет автоматически отправлен на ваш webhook URL
-            // Вы можете также уведомить ваш backend о завершении процесса
-            Log.d("AbleID", "Transaction ID: ${response.transactionId}")
-            Log.d("AbleID", "Estimated Age: ${response.estimatedAge}")
-        }
+        Toast.makeText(this, "Проверка liveness завершена успешно", Toast.LENGTH_SHORT).show()
+        // Результат будет автоматически отправлен на ваш webhook URL
+        // Вы можете также уведомить ваш backend о завершении процесса
+        Log.d("AbleID", "Transaction ID: ${response.transactionId}")
+        Log.d("AbleID", "Estimated Age: ${response.estimatedAge}")
     }
     
     private fun handleError(error: AbleIdLivenessError) {
-        runOnUiThread {
-            val message = when (error) {
-                is AbleIdLivenessError.UserCancellationError -> "Пользователь отменил проверку"
-                is AbleIdLivenessError.AbleLivenessProcessingError -> "Ошибка обработки liveness"
-                is AbleIdLivenessError.AbleInstructionsLoadError -> "Ошибка загрузки инструкций"
-            }
-            
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-            Log.e("AbleID", "Error: $message")
+        val message = when (error) {
+            is AbleIdLivenessError.UserCancellationError -> "Пользователь отменил проверку"
+            is AbleIdLivenessError.AbleLivenessProcessingError -> "Ошибка обработки liveness"
+            is AbleIdLivenessError.AbleInstructionsLoadError -> "Ошибка загрузки инструкций"
         }
+        
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Log.e("AbleID", "Error: $message")
     }
 }
 ```
@@ -212,11 +275,13 @@ class MainActivity : AppCompatActivity() {
 
 ### Добавление ссылок на репозитории
 
-В файле `build.gradle.kts` проекта (Project: android) добавьте следующие репозитории:
+В файле `build.gradle.kts` проекта (Project: android) добавьте следующие репозитории в блок `allprojects`, сохранив существующие `google()` и `mavenCentral()`:
 
 ```kotlin
 allprojects {
     repositories {
+        google()
+        mavenCentral()
         maven {
             url = uri("https://jitpack.io")
             credentials {
@@ -234,24 +299,37 @@ allprojects {
 
 ### Добавление зависимости библиотеки
 
-В файле `build.gradle.kts` модуля app добавьте следующую зависимость в блок dependencies. Замените `Tag` на последнюю версию релиза (например, v1.0.4):
+В файле `build.gradle.kts` модуля app добавьте зависимость SDK в блок dependencies (последняя версия — `v1.2.0`):
 
 ```kotlin
 dependencies {
-    implementation("com.github.theabletechnologies:AbleIDSDK-Jitpack:Tag")
+    implementation("com.github.theabletechnologies:AbleIDSDK-Jitpack:v1.2.0")
 }
 ```
 
+Версия Kotlin Gradle Plugin (`org.jetbrains.kotlin.android`, обычно задается в `android/settings.gradle.kts`) должна быть 2.1 или новее.
+
 ### Настройка темы AppCompat
 
-В Android модуле измените файл `styles.xml`, заменив стандартный XML следующим кодом. Убедитесь, что задали кастомное имя темы (например, `your_theme_name`), которое наследуется от `Theme.AppCompat.NoActionBar`:
+Экраны SDK используют тему, заданную у элемента `<application>`, а во Flutter-проекте она по умолчанию не указана. Добавьте в файл `android/app/src/main/res/values/styles.xml` тему с кастомным именем (например, `your_theme_name`), которая наследуется от `Theme.AppCompat.NoActionBar`. Существующие стили `LaunchTheme` и `NormalTheme` не удаляйте — на них ссылается `AndroidManifest.xml`:
 
 ```xml
 <resources>
+    <!-- LaunchTheme и NormalTheme оставьте без изменений -->
     <style name="your_theme_name" parent="Theme.AppCompat.NoActionBar">
     </style>
 </resources>
 ```
+
+Затем укажите эту тему у элемента `<application>` в файле `android/app/src/main/AndroidManifest.xml`:
+
+```xml
+<application
+    android:theme="@style/your_theme_name"
+    ...>
+```
+
+Тема `MainActivity` задается отдельно (`LaunchTheme` и `NormalTheme`), поэтому внешний вид Flutter-приложения не изменится.
 
 ## Поддержка
 
@@ -265,7 +343,7 @@ Jasur Salimov, jasurtsalimov@gmail.com
 
 ## Лицензия
 
-AbleIDSDK доступен под лицензией MIT. Подробности см. в файле LICENSE.
+AbleIDSDK доступен под лицензией MIT.
 
 ## Получение учетных данных
 
