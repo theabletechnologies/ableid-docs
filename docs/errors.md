@@ -121,7 +121,11 @@ title: Ошибки
 | **10302**  | `FACE_TRANSACTION_NOT_FOUND` | Сессия не найдена (неверный `attemptId` или не принадлежит проекту)                     |
 | **20423**  | `ONEID_DATA_LOCKED`          | Передача персональных данных заблокирована в системе OneID                              |
 
-### [POST] /check/get_passport
+### [POST] /check/get_passport (deprecated) {#post-checkget_passport}
+
+:::warning Deprecated
+Метод `/check/get_passport` устарел. Используйте [`/check/get_person`](#post-checkget_person).
+:::
 
 Получение паспортных данных резидента.
 
@@ -132,7 +136,7 @@ title: Ошибки
 
 ### [POST] /check/get_person
 
-Получение полной информации о резиденте (паспорт + прописка).
+Получение паспортных данных и прописки резидента.
 
 | StatusCode | Type                       | Описание                                        |
 |:-----------|:---------------------------|:------------------------------------------------|

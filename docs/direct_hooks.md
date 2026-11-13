@@ -172,7 +172,7 @@ sha1(sha1(projectId + secret).toUpperCase() + attemptId).toUpperCase()
 
 ### Вебхук резидента (`PERSON_WEBHOOK_URL`)
 
-Структура аналогична [хуку `/check/get_person`](/hooks#2-получение-полной-информации), но без поля `lang`.
+Структура аналогична [хуку `/check/get_person`](/hooks#2-получение-паспортных-данных-и-прописки), но без поля `lang`.
 
 ```json
 {
@@ -219,7 +219,7 @@ sha1(sha1(projectId + secret).toUpperCase() + attemptId).toUpperCase()
 }
 ```
 
-> Полное описание полей `person` и `registration` — в разделе [Хуки → Получение полной информации](/hooks#2-получение-полной-информации).
+> Полное описание полей `person` и `registration` — в разделе [Хуки → Получение паспортных данных и прописки](/hooks#2-получение-паспортных-данных-и-прописки).
 
 ---
 
